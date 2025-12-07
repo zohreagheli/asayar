@@ -20,7 +20,7 @@ class PanelController extends Controller
         }
 
 
-        return view('basic.index', [
+        return view('index', [
             'search' => $search,
             'results' => $results
         ]);

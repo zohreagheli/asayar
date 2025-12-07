@@ -1,8 +1,8 @@
 <div>
 
-        <div class="col col-login mx-auto mt-7 text-center">
-            <img src="{{ asset('assets/image/logo-206.png') }}" class="header-brand-img m-0" alt="لوگو">
-       
+    <div class="col col-login mx-auto mt-7 text-center">
+        <img src="{{ asset('assets/image/logo-206.png') }}" class="header-brand-img m-0" alt="لوگو">
+
 
         <div class="container-login100">
             <div class="wrap-login100 p-6">
@@ -43,18 +43,17 @@
                             <span class="text-danger">{{ $message }}</span>
                         @enderror
                     </div>
-
                     <small class="text-muted d-block mb-3">
-                        برای ثبت نام، حداقل یکی از فیلدهای ایمیل یا موبایل باید پر شود.
+                        شماره موبایل الزامی است — ایمیل اختیاری.
                     </small>
-
                     <!-- پسورد -->
                     <div class="wrap-input100 validate-input input-group mb-3" id="Password-toggle">
                         <a class="input-group-text bg-white text-muted toggle-password" href="javascript:void(0)">
                             <i class="zmdi zmdi-eye"></i>
                         </a>
-                        <input id="password" wire:model="password" class="input100 border-start-0 ms-0 text-end form-control"
-                            type="password" placeholder="کلمه عبور" required>
+                        <input id="password" wire:model="password"
+                            class="input100 border-start-0 ms-0 text-end form-control" type="password"
+                            placeholder="کلمه عبور" required>
                         @error('password')
                             <span class="text-danger">{{ $message }}</span>
                         @enderror
@@ -86,18 +85,18 @@
     </div>
 </div>
 <script>
-document.querySelectorAll('.toggle-password').forEach(function(toggle) {
-    toggle.addEventListener('click', function() {
-        const input = this.nextElementSibling;
-        if (input.type === 'password') {
-            input.type = 'text';
-            this.querySelector('i').classList.remove('zmdi-eye');
-            this.querySelector('i').classList.add('zmdi-eye-off');
-        } else {
-            input.type = 'password';
-            this.querySelector('i').classList.remove('zmdi-eye-off');
-            this.querySelector('i').classList.add('zmdi-eye');
-        }
+    document.querySelectorAll('.toggle-password').forEach(function(toggle) {
+        toggle.addEventListener('click', function() {
+            const input = this.nextElementSibling;
+            if (input.type === 'password') {
+                input.type = 'text';
+                this.querySelector('i').classList.remove('zmdi-eye');
+                this.querySelector('i').classList.add('zmdi-eye-off');
+            } else {
+                input.type = 'password';
+                this.querySelector('i').classList.remove('zmdi-eye-off');
+                this.querySelector('i').classList.add('zmdi-eye');
+            }
+        });
     });
-});
 </script>

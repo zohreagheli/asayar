@@ -31,7 +31,7 @@ use App\Livewire\ChatSupport;
 use App\Livewire\Admin\ChatAdmin;
 use App\Livewire\Auth\ResetPassword;
 use App\Livewire\Auth\AdminLoginForm;
-
+use App\Livewire\Auth\LoginWithOtp;
 Route::middleware('guest')->group(function () {
     Route::get('/register', RegisterForm::class)->name('register');
     Route::get('/login', LoginForm::class)->name('login');
@@ -64,7 +64,7 @@ Route::get('/tickets/create', CreateTicket::class)->name('tickets.create');
 Route::get('/tickets/list', TicketsList::class)->name('tickets.list');
 });
 
-Route::get('/', [MainController::class, 'index'])->name('welcome');
+Route::get('/', [MainController::class, 'index'])->name('home.page');
 Route::get('/asayar', [PanelController::class, 'index'])->name('home.page');
 Route::get('/appointments', AppointmentList::class)->name('appointments.index');
 Route::get('/user/technicians', UserTechnicians::class)->name('user.technicians');
@@ -77,7 +77,7 @@ Route::get('/support', ChatSupport::class)->name('support');
 Route::get('/contact-button', function () {
     return view('contact-button');
 })->name('contact-button');
-
+Route::get('/login-otp', LoginWithOtp::class) ->name('login.otp');
 Route::get('/tickets/show/{ticket}', Showtikets::class)->name('tickets.show');
 Route::get('/tickets/show/{ticket}/download', function (Ticket $ticket) {
     if (!$ticket->attachment_path) {
@@ -86,6 +86,8 @@ Route::get('/tickets/show/{ticket}/download', function (Ticket $ticket) {
     $path = storage_path('app/public/' . $ticket->attachment_path);
 
     return response()->download($path);})->name('tickets.download');
+
+
 
 Route::middleware(['web'])->group(function () {
     Livewire::setUpdateRoute(function ($handle) {

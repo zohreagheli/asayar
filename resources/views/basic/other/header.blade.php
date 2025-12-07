@@ -9,8 +9,10 @@
                 </a>
             </div>
             <!-- /LOGO -->
+
             <!-- منو -->
-            <div class="d-flex align-items-center ms-4 gap-4 nav-menu">
+            <div class="d-flex align-items-center justify-content-center ms-4 gap-4 nav-menu" style="height:90px;">
+
                 <a href="{{ route('about') }}" class="nav-item-circle">
                     <i class="fas fa-building"></i>
                     <span>معرفی شرکت</span>
@@ -75,11 +77,11 @@
                             </div>
                            COUNTRY -->
                             <div class="d-flex country">
-                                <a class="nav-link icon theme-layout nav-link-bg layout-setting">
-                                      <div class="nav-item-circle">
-                                    <span class="dark-layout"><i class="fe fe-moon"></i></span>
-                                    <span class="light-layout"><i class="fe fe-sun"></i></span>
-                                  </div>
+                                <a class="">
+                                    <div class="">
+                                        <span class=""><i class=""></i></span>
+                                        <span class=""><i class=""></i></span>
+                                    </div>
                                 </a>
 
                             </div>
@@ -87,10 +89,9 @@
                     </div>
                 </div>
                 <div class="dropdown d-flex">
-                    <a class="nav-link icon full-screen-link nav-link-bg">
-                          <div class="nav-item-circle">
-                        <i class="fe fe-minimize fullscreen-button"></i>
-                         </div>
+                    <a href="{{ route('home.page') }}" class="nav-item-circle">
+                        <i class="fas fa-home"></i>
+                        <span>خانه</span>
                     </a>
                 </div>
             </div>

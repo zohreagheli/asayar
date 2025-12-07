@@ -78893,6 +78893,15 @@ span.usage {
     box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
 }
 
+.header {
+    background: #ffffff;
+    box-shadow: 0 2px 12px rgba(99, 81, 167, 0.1);
+
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
 /* رنگ‌بندی جدید برای کارت‌ها */
 .service-card-primary {
     background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
@@ -79120,7 +79129,7 @@ span.usage {
     background: rgba(255, 255, 255, 0.05);
     transform: rotate(45deg);
     animation: cta-overlay 20s linear infinite;
-     pointer-events: none;
+    pointer-events: none;
 }
 
 @keyframes cta-overlay {
@@ -79325,53 +79334,53 @@ body.app-auth {
 
 
 .dashboard-background {
-  position: relative;
-  min-height: 100vh;
+    position: relative;
+    min-height: 100vh;
 
-  /* تصویر لوگو در وسط */
-  background-image: url("../../image/logo-26.png");
-  background-repeat: no-repeat;
-  background-position: center center;
-  background-size: 500px auto;
+    /* تصویر لوگو در وسط */
+    background-image: url("../../image/logo-26.png");
+    background-repeat: no-repeat;
+    background-position: center center;
+    background-size: 500px auto;
 
-  /* لایه‌ی سفید نیمه‌شفاف روی پس‌زمینه */
-  background-color: rgba(255, 255, 255, 0.85);
-  background-blend-mode: lighten;
+    /* لایه‌ی سفید نیمه‌شفاف روی پس‌زمینه */
+    background-color: rgba(255, 255, 255, 0.85);
+    background-blend-mode: lighten;
 }
 
 .dashboard-card {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  text-decoration: none;
-  background: linear-gradient(135deg, #304ffe, #7b1fa2);
-  color: #fff;
-  border-radius: 16px;
-  padding: 40px 20px;
-  text-align: center;
-  font-family: "Vazir", sans-serif;
-  font-weight: bold;
-  transition: all 0.3s ease;
-  position: relative;
-  box-shadow: none;
-  opacity: 1;
-  filter: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    background: linear-gradient(135deg, #304ffe, #7b1fa2);
+    color: #fff;
+    border-radius: 16px;
+    padding: 40px 20px;
+    text-align: center;
+    font-family: "Vazir", sans-serif;
+    font-weight: bold;
+    transition: all 0.3s ease;
+    position: relative;
+    box-shadow: none;
+    opacity: 1;
+    filter: none;
 }
 
 .dashboard-card:hover {
-  transform: translateY(-4px);
+    transform: translateY(-4px);
 }
 
 .dashboard-card h4 {
-  font-size: 20px;
-  color: #fff;
-  margin: 0;
+    font-size: 20px;
+    color: #fff;
+    margin: 0;
 }
 
 /* اگر کارت خاصی بخوای رنگش متفاوت باشه */
 .clear-card {
-  background: linear-gradient(135deg, #1e40af, #6d28d9);
-  color: #fff;
+    background: linear-gradient(135deg, #1e40af, #6d28d9);
+    color: #fff;
 }
 
 .table-dark th {
@@ -79382,11 +79391,13 @@ body.app-auth {
 .table-striped tbody tr:nth-of-type(odd) {
     background-color: #f8f9fa !important;
 }
+
 /* بخش چت */
 .chat-box {
     height: 400px;
     overflow-y: auto;
-    background: #5e42a6; /* رنگ بنفش */
+    background: #5e42a6;
+    /* رنگ بنفش */
     padding: 20px;
     border: 1px solid #ddd;
     border-radius: 12px;
@@ -79413,7 +79424,7 @@ body.app-auth {
     border: 1px solid #ddd;
     border-radius: 6px;
     background: #fff;
-    box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
     font-size: 14px;
     line-height: 1.6;
 }
@@ -79507,4 +79518,64 @@ body.app-auth {
     font-weight: 500;
     font-size: 0.9rem;
     user-select: none;
+}
+
+.custom-success-alert {
+    position: fixed;
+    top: 90px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 9999;
+    max-width: 400px;
+
+    background-color: #d4edda !important;
+    border-color: #c3e6cb !important;
+    color: #155724 !important;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 14px;
+
+    width: auto !important;
+    min-width: 200px;
+}
+
+/* حالت hover */
+.list-group-item-action:hover {
+    background-color: #f0f8ff;
+    /* آبی روشن */
+    color: #0d6efd;
+    /* آبی اصلی بوت‌استرپ */
+    border-right: 4px solid #0d6efd;
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+}
+
+/* حالت انتخاب‌شده */
+.list-group-item-action.active {
+    background-color: #0d6efd !important;
+    /* آبی اصلی */
+    color: #fff !important;
+    /* متن سفید */
+    border-right: 4px solid #084298;
+    /* آبی تیره‌تر */
+}
+
+/* آیکون تیک */
+.checkmark {
+    font-size: 1.2rem;
+}
+
+.label-inside {
+    background-color: #6f42c1 !important;
+    /* رنگ بنفش هماهنگ با دکمه‌ها */
+    color: #fff;
+    padding: 8px 14px;
+    border-top-right-radius: 0.375rem;
+    border-bottom-right-radius: 0.375rem;
+    font-size: 14px;
+    white-space: nowrap;
+    display: flex;
+    align-items: center;
 }

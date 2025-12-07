@@ -49,6 +49,19 @@ class CreateAppointment extends Component
             'address'         => 'required|min:5',
             'selectedTechnician' => 'required',
         ]);
+         try {
+        $carbonDate = $this->parseDate($this->date);
+    } catch (\Exception $e) {
+        session()->flash('error', $e->getMessage());
+        return;
+    }
+
+    // جلوگیری از انتخاب تاریخ گذشته
+    $today = Carbon::today();
+    if (Carbon::parse($carbonDate)->lt($today)) {
+        session()->flash('error', 'تاریخ انتخاب شده نمی‌تواند در گذشته باشد.');
+        return;
+    }
 
         try {
             $this->availableSlots = $this->generateTimeSlots();
@@ -136,7 +149,8 @@ class CreateAppointment extends Component
     // بررسی نوبت تکراری
     $existing = Appointment::where('technician_id', $this->selectedTechnician)
         ->where('date', $carbonDate)
-        ->where('time', $this->time)
+         ->where('start_time', "$carbonDate $start")
+         ->whereIn('status', ['pending', 'confirmed']) // فقط نوبت‌های فعال
         ->first();
 
     if ($existing) {
