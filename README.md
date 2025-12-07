@@ -59,3 +59,61 @@ If you discover a security vulnerability within Laravel, please send an e-mail t
 ## License
 
 The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+
+
+
+
+
+
+
+# 🚀 Asayar
+
+**Asayar** یک سیستم نوبت‌دهی آنلاین حرفه‌ای است که با **Laravel 10** و **Livewire** ساخته شده است.  
+این پروژه به کاربران و مدیران اجازه می‌دهد به راحتی نوبت‌ها را رزرو، مدیریت و پیگیری کنند.  
+
+---
+
+## 🛠 تکنولوژی‌ها و ابزارهای استفاده‌شده
+
+| تکنولوژی | توضیح |
+|----------|-------|
+| PHP 8.3 | زبان اصلی Backend |
+| Laravel 10 | فریمورک PHP |
+| Livewire | مدیریت کامپوننت‌ها به صورت Reactive |
+| Tailwind CSS | طراحی زیبا و Responsive |
+| MySQL | دیتابیس |
+| Composer / NPM | مدیریت پکیج‌ها |
+
+---
+
+## ✨ ویژگی‌های کلیدی
+
+- 🗓 **ثبت و مدیریت نوبت‌ها**  
+- 🔑 **ورود و ثبت‌نام با OTP**  
+- 📊 **داشبورد مدیریت نوبت‌ها**  
+- 💬 **فرم تماس با ما**  
+- 👥 **سیستم احراز هویت و مدیریت کاربران**  
+- 📱 **طراحی Responsive با Tailwind CSS**  
+
+---
+
+## ⚙️ نصب و راه‌اندازی
+
+### پیش‌نیازها:
+
+- PHP 8+  
+- Composer  
+- MySQL  
+- Node.js و NPM  
+
+### مراحل نصب:
+
+```bash
+git clone https://github.com/zohreagheli/asayar.git
+cd asayar
+composer install
+npm install
+cp .env.example .env
+php artisan key:generate
+php artisan migrate
+php artisan serve
