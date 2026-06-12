@@ -113,64 +113,7 @@
     </style>
 </head>
 <body>
-    <div class="container">
-        <!-- دکمه تماس -->
-        <button type="button" class="btn-contact" id="contactBtn">
-            02165
-        </button>
-
-        <!-- پنجره modal -->
-        <div id="contactModal" class="contact-modal">
-            <div class="contact-modal-content">
-                <span class="close-btn" id="closeModal">&times;</span>
-                <h4>تماس با ما</h4>
-                <p>شماره تماس: <strong id="phoneNumber">02165</strong></p>
-                <button id="copyBtn">کپی شماره</button>
-            </div>
-        </div>
-    </div>
-
-   <script>
-document.addEventListener("DOMContentLoaded", function() {
-    // باز کردن modal
-    document.getElementById('contactBtn').onclick = function() {
-        document.getElementById('contactModal').style.display = 'flex';
-    };
-
-    // بستن modal با ×
-    document.getElementById('closeModal').onclick = function() {
-        document.getElementById('contactModal').style.display = 'none';
-    };
-
-    // بستن modal با کلیک بیرون از پنجره
-    window.onclick = function(event) {
-        if(event.target == document.getElementById('contactModal')) {
-            document.getElementById('contactModal').style.display = 'none';
-        }
-    };
-
-    // کپی شماره به کلیپ‌بورد
-    document.getElementById('copyBtn').onclick = function() {
-        const number = document.getElementById('phoneNumber').innerText;
-        if (navigator.clipboard && navigator.clipboard.writeText) {
-            navigator.clipboard.writeText(number).then(() => {
-                alert("شماره تماس کپی شد!");
-            }).catch(() => {
-                alert("امکان کپی شماره وجود ندارد. لطفاً دستی کپی کنید.");
-            });
-        } else {
-            // fallback قدیمی
-            const input = document.createElement('input');
-            input.value = number;
-            document.body.appendChild(input);
-            input.select();
-            document.execCommand('copy');
-            document.body.removeChild(input);
-            alert("شماره تماس کپی شد!");
-        }
-    };
-});
-</script>
+   
 
 </body>
 </html>

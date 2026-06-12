@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Auth;
 
 class Showtikets extends Component
 {
- public Ticket $ticket;
+    public Ticket $ticket;
     public $adminReply;
 
     public function mount(Ticket $ticket)
@@ -26,7 +26,11 @@ class Showtikets extends Component
         $this->ticket->admin_reply = $this->adminReply;
         $this->ticket->save();
 
-        session()->flash('success', 'پاسخ با موفقیت ثبت شد.');
+        $this->dispatch(
+            'show-toast',
+            message: 'پاسخ با موفقیت ثبت شد.',
+            type: 'success'
+        );
     }
 
     public function render()
@@ -35,6 +39,6 @@ class Showtikets extends Component
             ? 'layouts.admin'
             : 'layouts.lay';
 
-        return view('livewire.admin.showtikets') ->layout($layout);
+        return view('livewire.admin.showtikets')->layout($layout);
     }
 }

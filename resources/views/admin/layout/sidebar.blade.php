@@ -1,18 +1,13 @@
 <div class="sticky">
     <div class="app-sidebar__overlay" data-bs-toggle="sidebar"></div>
     <div class="app-sidebar">
-        <div class="side-header"style="display: flex; align-items: center; padding: 10px 15px;">
+        <div class="side-header"style="display: flex; align-items: center;justify-content:center; padding: 10px 15px;">
             <a href="{{ route('home.page') }}">
                 <img src="{{ asset('assets/image/logo-206.png') }}" class="" alt="logo">
             </a>
             <!-- LOGO -->
 
-            <div class="user-name"
-                style="margin-right: 10px; color: #35353b; font-weight: bold; font-size: 16px; text-transform: capitalize;">
-                @auth
-                    <span>{{ auth()->user()->name }}</span>
-                @endauth
-            </div>
+
         </div>
         <div class="main-sidemenu" >
             <div class="slide-left disabled" id="slide-left"><svg xmlns="http://www.w3.org/2000/svg" fill="#7b8191"

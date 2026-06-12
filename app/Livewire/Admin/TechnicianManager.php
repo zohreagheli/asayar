@@ -1,98 +1,200 @@
 <?php
 
 namespace App\Livewire\Admin;
+
+use App\Models\Technician;
 use Livewire\Component;
 use Livewire\WithFileUploads;
-use App\Models\Technician;
-use Livewire\Attributes\Layout;
 use Livewire\WithPagination;
 
-#[Layout('layouts.admin')]
 class TechnicianManager extends Component
 {
-    use WithFileUploads, WithPagination;
-     protected $paginationTheme = 'bootstrap';
+    use WithPagination;
+    use WithFileUploads;
 
-    public $name, $phone, $expertise, $is_available = true, $image;
-    
-    public $editingId = null; // شناسه‌ی تکنسینی که در حال ویرایش است
+    protected $paginationTheme = 'bootstrap';
 
-    protected $rules = [
-        'name' => 'required|string|max:255',
-        'phone' => 'nullable|string|max:20',
-        'expertise' => 'nullable|string',
-        'is_available' => 'boolean',
-        'image' => 'nullable|image|max:1024', // حداکثر ۱ مگابایت
+    public $name;
+    public $phone;
+    public $expertise;
+    public $is_available = true;
+    public $image;
+    public $currentImage = null;
+    public $editingId = null;
+
+    public $showModal = false;
+    public $deleteId = null;
+    public $showDeleteModal = false;
+
+    public $pageTitle = 'مدیریت تکنسین‌ها';
+
+    public $breadcrumbs = [
+        [
+            'title' => 'داشبورد',
+            'url' => '/dashboard',
+        ],
+        [
+            'title' => 'مدیریت تکنسین‌ها',
+            'url' => null,
+        ],
     ];
 
-    public function resetForm()
+    protected function rules()
     {
-        $this->reset(['name', 'phone', 'expertise', 'is_available', 'image', 'editingId']);
+        return [
+            'name' => 'required|string|max:255',
+            'phone' => 'required|string|max:20',
+            'expertise' => 'nullable|string',
+            'is_available' => 'boolean',
+            'image' => 'nullable|image|max:2048',
+        ];
+    }
+    protected function messages()
+    {
+        return [
+
+            'name.required' => 'وارد کردن نام تکنسین الزامی است.',
+            'name.max'      => 'نام تکنسین نمی‌تواند بیشتر از ۲۵۵ کاراکتر باشد.',
+            
+            'phone.required' => 'وارد کردن شماره تلفن الزامی است.',
+            'phone.max'     => 'شماره تلفن نمی‌تواند بیشتر از ۲۰ کاراکتر باشد.',
+
+            'image.image'   => 'فایل انتخاب شده باید تصویر باشد.',
+            'image.max'     => 'حجم تصویر نباید بیشتر از ۲ مگابایت باشد.',
+
+        ];
     }
 
-    public function save()
+    protected function validationAttributes()
     {
-        $this->validate();
+        return [
 
-        $path = $this->image ? $this->image->store('technicians', 'public') : null;
+            'name'         => 'نام تکنسین',
+            'phone'        => 'تلفن',
+            'expertise'    => 'تخصص',
+            'image'        => 'تصویر',
+            'is_available' => 'وضعیت',
 
-        Technician::create([
-            'name' => $this->name,
-            'phone' => $this->phone,
-            'expertise' => $this->expertise,
-            'is_available' => $this->is_available,
-            'image' => $path,
-        ]);
+        ];
+    }
 
+    public function create()
+    {
         $this->resetForm();
-        session()->flash('message', '✅ تکنسین با موفقیت اضافه شد.');
+
+        $this->dispatch('open-modal');
     }
 
     public function edit($id)
     {
         $tech = Technician::findOrFail($id);
-        $this->editingId = $id;
+
+        $this->editingId = $tech->id;
         $this->name = $tech->name;
         $this->phone = $tech->phone;
         $this->expertise = $tech->expertise;
         $this->is_available = $tech->is_available;
-        $this->image = null;
+        $this->currentImage = $tech->image;
+        $this->dispatch('open-modal');
     }
 
-    public function update()
+    public function closeModal()
+    {
+        $this->dispatch('close-modal');
+        $this->resetForm();
+    }
+    public function save()
     {
         $this->validate();
 
-        $tech = Technician::findOrFail($this->editingId);
-        $path = $tech->image;
-
-        if ($this->image) {
-            $path = $this->image->store('technicians', 'public');
-        }
-
-        $tech->update([
+        $data = [
             'name' => $this->name,
             'phone' => $this->phone,
             'expertise' => $this->expertise,
             'is_available' => $this->is_available,
-            'image' => $path,
-        ]);
+        ];
+
+        if ($this->image) {
+            $data['image'] = $this->image->store('technicians', 'public');
+        }
+
+        if ($this->editingId) {
+            Technician::find($this->editingId)->update($data);
+            $msg = 'تکنسین ویرایش شد';
+        } else {
+            Technician::create($data);
+            $msg = 'تکنسین ثبت شد';
+        }
 
         $this->resetForm();
-        session()->flash('message', '📝 تغییرات با موفقیت ذخیره شد.');
+
+        $this->dispatch('close-modal'); // ⭐ این مهمه
+
+        $this->dispatch(
+            'show-toast',
+            message: $msg,
+            type: 'success'
+        );
     }
 
-    public function delete($id)
+    public function confirmDelete($id)
     {
-        Technician::findOrFail($id)->delete();
-        session()->flash('message', '❌ تکنسین حذف شد.');
+
+        $this->deleteId = $id;
+        $this->showDeleteModal = true;
+    }
+
+    public function deleteTechnician()
+    {
+
+        try {
+
+            Technician::findOrFail($this->deleteId)->delete();
+
+            $this->showDeleteModal = false;
+            $this->deleteId = null;
+
+            $this->dispatch(
+                'show-toast',
+                message: 'تکنسین حذف شد',
+                type: 'success'
+            );
+        } catch (\Exception $e) {
+
+            dd($e->getMessage());
+        }
+    }
+
+
+    public function resetForm()
+    {
+        $this->reset([
+            'name',
+            'phone',
+            'expertise',
+            'image',
+            'editingId',
+            'currentImage',
+        ]);
+
+        $this->is_available = true;
+        $this->showModal = false;
     }
 
     public function render()
     {
-        // صفحه‌بندی تکنسین‌ها
-        $technicians = Technician::latest()->paginate(5);
-
-        return view('livewire.admin.technician-manager', compact('technicians'));
+        return view(
+            'livewire.admin.technician-manager',
+            [
+                'technicians' => Technician::latest()
+                    ->paginate(10),
+            ]
+        )->layout(
+            'layouts.admin',
+            [
+                'pageTitle' => $this->pageTitle,
+                'breadcrumbs' => $this->breadcrumbs,
+            ]
+        );
     }
 }

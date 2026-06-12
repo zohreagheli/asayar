@@ -17,10 +17,7 @@
     <script src="{{ asset('assets/panel/js/jquery.min.js') }}"></script>
 
     <!-- Persian Date & Datepicker -->
-    <script src="https://cdn.jsdelivr.net/npm/persian-date@1.1.0/dist/persian-date.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/persian-datepicker@1.2.0/dist/js/persian-datepicker.min.js"></script>
-    <link rel="stylesheet"
-        href="https://cdn.jsdelivr.net/npm/persian-datepicker@1.2.0/dist/css/persian-datepicker.min.css">
+    <link rel="stylesheet" href="{{ asset('libs/datepicker/jalalidatepicker.min.css') }}">
 
     <!-- BOOTSTRAP CSS -->
     <link id="style" href="{{ asset('assets/panel/plugins/bootstrap/css/bootstrap.min.css') }}" rel="stylesheet" />
@@ -42,7 +39,7 @@
 
     <!-- Toastify -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
-     @livewireStyles
+    @livewireStyles
 </head>
 
 <body class="app sidebar-mini sidebar-collapse
@@ -64,10 +61,56 @@
 
             <!-- MAIN CONTENT -->
             <main>
-            {{ $slot }}
+                <div class="app-content">
+                    <div class="container-fluid">
+                        @if (isset($pageTitle))
+
+                            <div class="row justify-content-center">
+
+                                <div class="col-xl-10 col-lg-11">
+
+                                    <div class="page-header d-block mb-4">
+
+                                        <div>
+                                            <h1 class="page-title">
+                                                {{ $pageTitle }}
+                                            </h1>
+                                        </div>
+
+                                        @if (isset($breadcrumbs))
+                                            <div>
+                                                <ol class="breadcrumb">
+
+                                                    @foreach ($breadcrumbs as $item)
+                                                        @if ($loop->last)
+                                                            <li class="breadcrumb-item active">
+                                                                {{ $item['title'] }}
+                                                            </li>
+                                                        @else
+                                                            <li class="breadcrumb-item">
+                                                                <a href="{{ $item['url'] }}">
+                                                                    {{ $item['title'] }}
+                                                                </a>
+                                                            </li>
+                                                        @endif
+                                                    @endforeach
+
+                                                </ol>
+                                            </div>
+                                        @endif
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                        @endif {{ $slot }}
+                    </div>
+                </div>
             </main>
             <!-- BACK-TO-TOP -->
-            <a href="#top" id="back-to-top"><i class="fa fa-angle-up"></i></a>
+
 
         </div>
     </div>
@@ -86,7 +129,24 @@
     <!-- Toastify -->
     <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
     <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
-    @stack('scripts')
+    <script>
+    document.addEventListener('livewire:init', () => {
+
+        Livewire.on('show-toast', (event) => {
+
+            Toastify({
+                text: event.message,
+                duration: 3000,
+                gravity: "top",
+                position: "right",
+                backgroundColor: event.type === 'success' ? "green" : "red",
+            }).showToast();
+
+        });
+
+    });
+</script>
+    @stack('js')
 
 </body>
 

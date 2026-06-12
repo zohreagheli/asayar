@@ -6,7 +6,7 @@
             <!-- sidebar-toggle-->
 
             <!-- LOGO -->
-            <livewire:search-box />
+           
             <div class="d-flex order-lg-2 ms-auto header-right-icons">
                 <div class="dropdown d-none">
                     <a href="javascript:void(0)" class="nav-link icon" data-bs-toggle="dropdown">

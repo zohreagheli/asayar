@@ -11,8 +11,15 @@
                         <div class="d-flex justify-content-between align-items-center w-100">
                             <!-- دکمه‌ها و تماس‌ها -->
                             <div class="d-flex align-items-center gap-2">
-                                <a href="{{ route('support') }}" class="btn-custom"><i class="fas fa-headset"></i> پشتیبانی ۲۴ ساعته</a>
-                                <a href="{{ route('contact-button') }}" class="btn-custom"><i class="fas fa-phone-alt"></i> ۰۲۱۶۵</a>
+                                <a href="{{ route('support') }}" class="btn-custom"><i class="fas fa-headset"></i> پشتیبانی ۲۴
+                                    ساعته</a>
+                                <button type="button" class="btn-custom border-0" data-bs-toggle="modal"
+                                    data-bs-target="#phoneModal">
+
+                                    <i class="fas fa-phone-alt"></i>
+                                    ۰۲۱۶۵
+
+                                </button>
                             </div>
 
                             <!-- breadcrumb -->
@@ -42,16 +49,16 @@
                 </div>
 
                 <!-- کارت سنجاق‌شده
-                <div class="catalog-pin-wrapper">
-                    <div class="pin pin-left"></div>
-                    <div class="catalog-card">
-                        <h3 class="catalog-title">عنوان کارت</h3>
-                        <p class="catalog-text">
-                            این یک متن نمونه طولانی است که کارت را بلندتر و طبیعی‌تر نشان می‌دهد...
-                        </p>
-                        <a href="#" class="catalog-cta">بیشتر بخوانید</a>
-                    </div>
-                </div>-->
+                    <div class="catalog-pin-wrapper">
+                        <div class="pin pin-left"></div>
+                        <div class="catalog-card">
+                            <h3 class="catalog-title">عنوان کارت</h3>
+                            <p class="catalog-text">
+                                این یک متن نمونه طولانی است که کارت را بلندتر و طبیعی‌تر نشان می‌دهد...
+                            </p>
+                            <a href="#" class="catalog-cta">بیشتر بخوانید</a>
+                        </div>
+                    </div>-->
 
 
                 <!-- Promotional Marquee -->
@@ -237,4 +244,176 @@
     </div>
 
     <!-- ================= CSS پس‌زمینه و شفافیت ================= -->
+    <!-- Phone Modal -->
+
+<div
+    class="modal fade"
+    id="phoneModal"
+    tabindex="-1"
+    aria-hidden="true">
+
+    <div class="modal-dialog modal-dialog-centered">
+
+        <div class="modal-content border-0 rounded-4 overflow-hidden shadow-lg">
+
+            <div
+                class="text-center text-white py-4"
+                style="
+                    background:linear-gradient(
+                        135deg,
+                        #6351a7 0%,
+                        #362280 100%
+                    );
+                ">
+
+                <div
+                    class="mx-auto mb-3 d-flex align-items-center justify-content-center rounded-circle"
+                    style="
+                        width:90px;
+                        height:90px;
+                        background:rgba(255,255,255,.15);
+                        backdrop-filter: blur(5px);
+                    ">
+
+                    <i
+                        class="fas fa-phone-alt"
+                        style="
+                            font-size:32px;
+                            color:white;
+                        ">
+                    </i>
+
+                </div>
+
+                <h4 class="fw-bold mb-2">
+                    تماس با آسایار
+                </h4>
+
+                <p class="mb-0 opacity-75">
+                    پاسخگویی در تمام روزهای هفته
+                </p>
+
+            </div>
+
+            <div class="modal-body text-center py-4">
+
+                <div
+                    id="phoneNumber"
+                     data-phone="02165"
+                    class="fw-bold mb-3"
+                    style="
+                        font-size:32px;
+                        color:#4b3a8f;
+                        letter-spacing:2px;
+                    ">
+
+                    ۰۲۱۶۵
+
+                </div>
+
+                <small class="text-muted">
+                    برای ارتباط با واحد پشتیبانی تماس بگیرید
+                </small>
+
+            </div>
+
+            <div class="modal-footer border-0 justify-content-center pb-4">
+
+                <button
+                    type="button"
+                    class="btn btn-light px-4"
+                    data-bs-dismiss="modal">
+
+                    بستن
+
+                </button>
+
+                <button
+                    type="button"
+                    class="btn text-white px-4"
+                    style="
+                        background:linear-gradient(
+                            135deg,
+                            #6351a7 0%,
+                            #362280 100%
+                        );
+                    "
+                    onclick="copyPhone()">
+
+                    <i class="fas fa-copy ms-1"></i>
+
+                    کپی شماره
+
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<script>
+function copyPhone() {
+
+    let number = document
+        .getElementById('phoneNumber')
+        .dataset.phone;
+
+    // روش جدید
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+
+        navigator.clipboard.writeText(number)
+            .then(showSuccess)
+            .catch(fallbackCopy);
+
+    } else {
+
+        fallbackCopy();
+
+    }
+
+    function fallbackCopy() {
+
+        let input = document.createElement('input');
+
+        input.value = number;
+
+        document.body.appendChild(input);
+
+        input.select();
+
+        document.execCommand('copy');
+
+        document.body.removeChild(input);
+
+        showSuccess();
+    }
+
+    function showSuccess() {
+
+        if (typeof Toastify !== 'undefined') {
+
+            Toastify({
+                text: "شماره تماس کپی شد ✓",
+                duration: 3000,
+                gravity: "top",
+                position: "right",
+                style: {
+                    background:
+                        "linear-gradient(135deg,#6351a7,#362280)"
+                }
+            }).showToast();
+
+        } else {
+
+            alert('شماره تماس کپی شد');
+
+        }
+
+    }
+
+}
+</script>
 @endsection

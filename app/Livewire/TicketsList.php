@@ -10,10 +10,28 @@ use Illuminate\Support\Facades\Auth;
 class TicketsList extends Component
 {
     use WithPagination;
+
     protected $paginationTheme = 'bootstrap';
 
     public $search = '';
-    protected $listeners = ['ticketCreated' => '$refresh', 'search-updated' => 'updateSearch'];
+
+    public $pageTitle = 'لیست تیکت‌ها';
+
+    public $breadcrumbs = [
+        [
+            'title' => 'داشبورد',
+            'url' => '/dashboard'
+        ],
+        [
+            'title' => 'لیست تیکت‌ها',
+            'url' => null
+        ]
+    ];
+
+    protected $listeners = [
+        'ticketCreated' => '$refresh',
+        'search-updated' => 'updateSearch'
+    ];
 
     public function updateSearch($searchValue)
     {
@@ -34,16 +52,20 @@ class TicketsList extends Component
         }
 
         $tickets = $query
-            ->when($this->search, function($q) {
-                $q->where(function($q2) {
-                    $q2->where('title', 'like', '%'.$this->search.'%')
-                       ->orWhere('category', 'like', '%'.$this->search.'%');
+            ->when($this->search, function ($q) {
+                $q->where(function ($q2) {
+                    $q2->where('title', 'like', '%' . $this->search . '%')
+                       ->orWhere('category', 'like', '%' . $this->search . '%');
                 });
             })
-            ->orderBy('created_at', 'desc')
+            ->latest()
             ->paginate(10);
 
-        return view('livewire.tickets-list', ['tickets' => $tickets])
-               ->layout($layout);
+        return view('livewire.tickets-list', [
+            'tickets' => $tickets
+        ])->layout($layout, [
+            'pageTitle' => $this->pageTitle,
+            'breadcrumbs' => $this->breadcrumbs
+        ]);
     }
 }

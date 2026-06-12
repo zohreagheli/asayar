@@ -2,26 +2,35 @@
 
 namespace App\Models;
 use App\Models\Service;
+use App\Enums\AppointmentStatus;
 
 use Illuminate\Database\Eloquent\Model;
 
 class Appointment extends Model
 {
     protected $casts = [
-        'start_time' => 'datetime:Y-m-d H:i',
-        'end_time' => 'datetime:Y-m-d H:i'
-    ];
+    'status' => AppointmentStatus::class,
+];
     protected $fillable = [
-   'user_id',
+
+    'user_id',
+
     'service_id',
+
     'technician_id',
-    'date',  
+
+    'preferred_date',
+
+    'preferred_time',
+
     'address',
-    'time',
-    'start_time',
-    'end_time',
+
+    'description',
+
+    'attachment',
+
     'status',
-    ];
+];
 
 public function user()
 {
@@ -37,4 +46,5 @@ public function technician()
 {
     return $this->belongsTo(Technician::class);
 }
+
 }

@@ -1,49 +1,151 @@
-<div class="container mt-4">
-    <div class="app-content">
-          <h2 class="mb-4 text-center">تمام سرویسکاران</h2>
+<div>
 
-        <!-- جستجو -->
-        <div class="mb-3  text-center position-relative">
-            <input type="text" class="form-control w-50 mx-auto" placeholder="جستجو بر اساس نام یا تخصص..."
-                wire:model.live="search">
+    <div class="row justify-content-center">
 
-            <!-- لودینگ اسپینر -->
-            <div wire:loading wire:target="search"
-                class="spinner-border text-primary position-absolute top-50 end-0 translate-middle-y me-5" role="status"
-                style="width: 1.5rem; height: 1.5rem;">
-                <span class="visually-hidden">در حال جستجو...</span>
-            </div>
-        </div>
+        <div class="col-xl-10 col-lg-11">
 
-        <!-- نتایج -->
-        <div wire:loading.class="opacity-50">
-            <div class="row">
-                @forelse($technicians as $technician)
-                    <div class="col-md-3 mb-3">
-                        <div class="card shadow-sm">
-                            <div class="card-img-top image-box"
-                                style="height: 220px; background-color: #f5f5f5; display: flex; align-items: center; justify-content: center;">
-                                @if ($technician->image)
-                                    <img src="{{ asset('storage/' . $technician->image) }}" alt="{{ $technician->name }}"
-                                        style="max-height: 100%; max-width: 100%; object-fit: cover;">
-                                @endif
-                            </div>
-                            <div class="card-body text-center">
-                                <h5 class="card-title">{{ $technician->name }}</h5>
-                                <p class="card-text">{{ $technician->expertise ?? '-' }}</p>
-                            </div>
+            <div class="card border-0 shadow-sm rounded-4">
+
+                <div class="card-body p-4">
+
+                    {{-- Search --}}
+                    <div class="mb-4 d-flex justify-content-center">
+
+
+
+                        <div class="input-group w-50 mx-auto">
+
+                            <input type="text" class="form-control" placeholder="جستجو بر اساس نام یا تخصص..."
+                                wire:model.live.debounce.500ms="search">
+
+                            <span class="input-group-text text-white border-0"
+                                style="
+            background:#6351a7;
+            min-width:90px;
+            justify-content:center;
+        ">
+                                جستجو
+                            </span>
+
                         </div>
+
                     </div>
-                @empty
-                    <div class="col-12 text-center">
-                        <p>سرویسکاری با این عنوان ثبت نشده است.</p>
-                    </div>
-                @endforelse
-            </div>
+
+                </div>
+
+                {{-- Loading --}}
+                 <div
+        wire:loading.flex
+        wire:target="search"
+        class="justify-content-center align-items-center position-absolute top-50 start-50 translate-middle"
+        style="z-index:999">
+
+        <div class="spinner-border text-primary"
+             role="status"
+             style="width:2rem;height:2rem">
         </div>
 
-        <div class="mt-3">
-            {{ $technicians->links() }}
-        </div>
     </div>
+
+
+                {{-- Cards --}}
+                <div wire:loading.class="opacity-50">
+
+                    <div class="row g-4">
+
+                        @forelse($technicians as $technician)
+                            <div class="col-xl-3 col-lg-4 col-md-6">
+
+                                <div class="card border-0 shadow-sm rounded-4 h-100">
+
+                                    <div class="p-3">
+
+                                        @if ($technician->image)
+                                            <img src="{{ asset('storage/' . $technician->image) }}"
+                                                alt="{{ $technician->name }}" class="w-100 rounded-3 border"
+                                                style="
+                                                        height:240px;
+                                                        object-fit:cover;
+                                                    ">
+                                        @else
+                                            <div class="d-flex align-items-center justify-content-center border rounded-3 bg-light"
+                                                style="
+                                                        height:240px;
+                                                    ">
+
+                                                <i class="fa-solid fa-user-gear fs-1 text-muted"></i>
+
+                                            </div>
+                                        @endif
+
+                                    </div>
+
+                                    <div class="card-body text-center pt-0">
+
+                                        <h5 class="fw-bold mb-2">
+
+                                            {{ $technician->name }}
+
+                                        </h5>
+
+                                        <div class="text-muted small mb-3">
+
+                                            {{ $technician->expertise ?: 'تخصص ثبت نشده' }}
+
+                                        </div>
+
+                                        <span class="badge bg-success">
+
+                                            سرویسکار فعال
+
+                                        </span>
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                        @empty
+
+                            <div class="col-12">
+
+                                <div class="text-center py-5">
+
+                                    <i class="fa-solid fa-user-slash fs-1 text-muted mb-3"></i>
+
+                                    <div class="text-muted">
+
+                                        سرویسکاری با این مشخصات پیدا نشد
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+                        @endforelse
+
+                    </div>
+
+                </div>
+
+
+
+                {{-- Pagination --}}
+                @if ($technicians->hasPages())
+                    <div class="mt-4">
+
+                        {{ $technicians->links() }}
+
+                    </div>
+                @endif
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
 </div>

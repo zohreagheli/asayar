@@ -1,52 +1,238 @@
-<div class="container py-4">
-    <div class="app-content">
-        <h2 class="mb-4 text-center">مدیریت گالری تصاویر</h2>
+<div>
 
-        @if (session('success'))
-            <div class="alert alert-success text-center">{{ session('success') }}</div>
-        @endif
+    <div class="row justify-content-center">
 
-       <form wire:submit.prevent="save" enctype="multipart/form-data" class="mb-4">
-    @foreach($images as $index => $img)
-        <div class="mb-2 d-flex gap-2 align-items-center">
-            <span>{{ $img->getClientOriginalName() }}</span>
-            <input type="text" wire:model.defer="titles.{{ $index }}" class="form-control" placeholder="عنوان تصویر...">
-        </div>
-    @endforeach
+        <div class="col-xl-10 col-lg-11">
 
-    <div class="mb-3">
-        <input type="file" wire:model="images" multiple class="form-control">
-        @error('images.*') <span class="text-danger">{{ $message }}</span> @enderror
-        @error('titles.*') <span class="text-danger">{{ $message }}</span> @enderror
-    </div>
+            <div class="card border-0 shadow-sm rounded-4">
 
-    <button type="submit" class="btn btn-primary w-100">افزودن تصاویر</button>
-</form>
+                <div class="card-body p-4">
 
+                    <div class="d-flex justify-content-between align-items-center mb-4">
 
-        <!-- نمایش تصاویر -->
-        <div class="row">
-            @forelse ($gallery as $item)
-                <div class="col-md-3 mb-3">
-                    <div class="card shadow-sm">
-                        <img src="{{ asset('storage/' . $item->image) }}" class="card-img-top" alt="image">
+                        <h5 class="fw-bold mb-0">
+                        </h5>
 
-                        <div class="card-body text-center">
-                            @if ($editId === $item->id)
-                                <input type="text" wire:model.defer="titles.{{ $item->id }}" class="form-control mb-2" placeholder="عنوان جدید...">
-                                <button wire:click="update({{ $item->id }})" class="btn btn-success btn-sm">ذخیره</button>
-                                <button wire:click="$set('editId', null)" class="btn btn-secondary btn-sm">انصراف</button>
-                            @else
-                                <h6 class="card-title">{{ $item->title ?? 'بدون عنوان' }}</h6>
-                                <button wire:click="edit({{ $item->id }})" class="btn btn-warning btn-sm">ویرایش</button>
-                                <button wire:click="delete({{ $item->id }})" class="btn btn-danger btn-sm" onclick="return confirm('آیا از حذف مطمئنی؟')">حذف</button>
-                            @endif
-                        </div>
+                        <button class="btn btn-primary btn-sm px-3  py-1" wire:click="create">
+
+                            <i class="fa-solid fa-plus ms-1"></i>
+
+                            افزودن تصویر
+
+                        </button>
+
                     </div>
+
+                    <div class="row g-4">
+
+                        @forelse($gallery as $item)
+                            <div class="col-xl-3 col-lg-4 col-md-6">
+
+                                <div class="card border-0 shadow-sm rounded-4 h-100">
+
+                                    <div class="p-2">
+
+                                        <img src="{{ asset('storage/' . $item->image) }}" class="w-100 rounded-3 border"
+                                            style="
+                                                height:220px;
+                                                object-fit:cover;
+                                            ">
+                                    </div>
+
+                                    <div class="card-body text-center">
+
+                                        <h6 class="fw-bold mb-3">
+
+                                            {{ $item->title ?: 'بدون عنوان' }}
+
+                                        </h6>
+
+                                        <div class="d-flex justify-content-center gap-3">
+
+                                            <i class="fa-solid fa-pen-to-square text-warning fs-5"
+                                                style="cursor:pointer" wire:click="edit({{ $item->id }})">
+                                            </i>
+
+                                            <i class="fa-solid fa-trash text-danger fs-5" style="cursor:pointer"
+                                                wire:click="confirmDelete({{ $item->id }})">
+                                            </i>
+
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                        @empty
+
+                            <div class="col-12">
+
+                                <div class="text-center py-5 text-muted">
+
+                                    تصویری ثبت نشده است
+
+                                </div>
+
+                            </div>
+                        @endforelse
+
+                    </div>
+
+                    <div class="mt-4">
+
+                        {{ $gallery->links() }}
+
+                    </div>
+
                 </div>
-            @empty
-                <p class="text-center">هیچ تصویری در گالری وجود ندارد.</p>
-            @endforelse
+
+            </div>
+
         </div>
+
     </div>
+
+    {{-- Modal Add/Edit --}}
+
+    <div wire:ignore.self class="modal fade" id="technicianModal" tabindex="-1">
+
+        <div class="modal-dialog modal-dialog-centered">
+
+            <div class="modal-content border-0 shadow rounded-4">
+
+                <div class="modal-header bg-primary text-white">
+
+                    <h6 class="mb-0">
+
+                        {{ $editingId ? 'ویرایش تصویر' : 'افزودن تصویر جدید' }}
+
+                    </h6>
+
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal">
+                    </button>
+
+                </div>
+
+                <div class="modal-body">
+
+                    <div class="mb-3">
+
+                        <label class="form-label">
+
+                            عنوان تصویر
+
+                        </label>
+
+                        <input type="text" class="form-control" wire:model.defer="title">
+                        @error('title')
+                            <small class="text-danger">
+                                {{ $message }}
+                            </small>
+                        @enderror
+
+                    </div>
+
+                    <div class="mb-3">
+
+                        <label class="form-label">
+
+                            تصویر
+
+                        </label>
+
+                        <input type="file" class="form-control" wire:model="image">
+
+                        @error('image')
+                            <small class="text-danger">
+                                {{ $message }}
+                            </small>
+                        @enderror
+
+                    </div>
+
+                    @if ($image)
+                        <div class="text-center">
+
+                            <img src="{{ $image->temporaryUrl() }}" class="img-fluid rounded border"
+                                style="max-height:250px">
+
+                        </div>
+                    @endif
+
+                </div>
+
+                <div class="modal-footer">
+
+                    <button class="btn btn-light btn-sm" data-bs-dismiss="modal">
+
+                        انصراف
+
+                    </button>
+
+                    <button class="btn btn-primary btn-sm" wire:click="save">
+
+                        <i class="fa-solid fa-floppy-disk ms-1"></i>
+
+                        ذخیره
+
+                    </button>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    {{-- Delete Modal --}}
+
+    @if ($showDeleteModal)
+        <div class="modal fade show d-block" tabindex="-1" style="background:rgba(0,0,0,.5);z-index:99999;">
+
+            <div class="modal-dialog modal-dialog-centered">
+
+                <div class="modal-content rounded-4">
+
+                    <div class="modal-header bg-danger text-white">
+
+                        <h5 class="modal-title">
+
+                            تایید حذف
+
+                        </h5>
+
+                    </div>
+
+                    <div class="modal-body text-center py-4">
+
+                        آیا از حذف این تصویر مطمئن هستید؟
+
+                    </div>
+
+                    <div class="modal-footer">
+
+                        <button class="btn btn-secondary" wire:click="$set('showDeleteModal', false)">
+
+                            انصراف
+
+                        </button>
+
+                        <button class="btn btn-danger" wire:click="deleteImage">
+
+                            حذف
+
+                        </button>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+    @endif
+
 </div>

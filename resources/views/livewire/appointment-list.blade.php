@@ -1,107 +1,189 @@
-<div class="card p-3">
-    <div class="app-content">
-        <div class="d-flex justify-content-between align-items-center mb-3">
-            <h4 class="text-primary">لیست نوبت ها</h4>
-        </div>
-        @if ($success)
-            <div class="alert alert-success custom-success-alert alert-dismissible fade show">
-                <span>{{ $success }}</span>
+<div class="row justify-content-center">
 
-                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-            </div>
-        @endif
-        <div class="card shadow-sm">
-            <div class="card-body">
+    <div class="col-xl-10 col-lg-11">
+
+
+
+        <div class="card border-0 shadow-sm rounded-4">
+
+            <div class="card-body p-4">
+
+
+
                 <div class="table-responsive">
-                    <table class="table table-bordered table-hover">
-                        <thead style="background:#d9c3f7; color:white;">
+
+                    <table class="table table-hover align-middle">
+
+                        <thead
+                            style="
+                                background: #896dbd;
+                                color: #fff;
+                            ">
+
                             <tr>
-                                <th class="text-center">ردیف</th>
-                                <th class="text-center">خدمت</th>
-                                <th class="text-center">سرویس‌گیرنده</th>
-                                <th class="text-center">سرویس‌کار</th>
-                                <th class="text-center">تاریخ و زمان</th>
-                                <th class="text-center">وضعیت</th>
+
+                                <th class="text-center">
+                                    ردیف
+                                </th>
+
+                                <th class="text-center">
+                                    خدمت
+                                </th>
+
+                                <th class="text-center">
+                                    سرویس‌گیرنده
+                                </th>
+
+                                <th class="text-center">
+                                    تاریخ مراجعه
+                                </th>
+
+                                <th class="text-center">
+                                    بازه زمانی
+                                </th>
+
+                                <th class="text-center">
+                                    وضعیت
+                                </th>
 
                                 @if (auth()->check() && auth()->user()->role === 'admin')
-                                    <th class="text-center">اقدامات</th>
+                                    <th class="text-center">
+                                        اقدامات
+                                    </th>
                                 @endif
+
                             </tr>
+
                         </thead>
 
                         <tbody>
+
                             @forelse($appointments as $appointment)
                                 <tr>
-                                    <td class="align-middle text-center">
-                                        {{ $this->convertToPersianNumbers($appointment->row_number) }}
+
+                                    <td class="text-center">
+
+                                        {{ persian_numbers($loop->iteration + ($appointments->currentPage() - 1) * $appointments->perPage()) }}
+
                                     </td>
 
-                                    <td class="align-middle text-center text-truncate" style="max-width:150px;">
-                                        {{ $appointment->service->name }}
+                                    <td class="text-center">
+
+                                        {{ $appointment->service?->name ?? '-' }}
+
                                     </td>
 
-                                    <td class="align-middle text-center text-truncate" style="max-width:120px;">
-                                        {{ $appointment->user ? $appointment->user->name : '-' }}
+                                    <td class="text-center">
+
+                                        {{ $appointment->user?->name ?? '-' }}
+
                                     </td>
 
-                                    <td class="align-middle text-center text-truncate" style="max-width:120px;">
-                                        {{ $appointment->technician ? $appointment->technician->name : '-' }}
+                                    <td class="text-center">
+
+
+                                        {{ persian_numbers(jalali_date($appointment->preferred_date)) }}
+
                                     </td>
 
-                                    <td class="align-middle text-center">
-                                        {{ $this->convertToPersianNumbers($appointment->persian_date) }}
+                                    <td class="text-center">
+
+                                        {{ persian_numbers($appointment->preferred_time) }}
+
                                     </td>
 
-                                    <td class="align-middle text-center">
-                                        @php
-                                            $statusClass =
-                                                [
-                                                    'pending' => 'bg-warning text-dark',
-                                                    'confirmed' => 'bg-success text-white',
-                                                    'canceled' => 'bg-danger text-white',
-                                                ][$appointment->status] ?? 'bg-secondary text-white';
-                                        @endphp
-                                        <span class="badge {{ $statusClass }}">
-                                            {{ $this->getPersianStatus($appointment->status) }}
+                                    <td class="text-center">
+
+                                        <span class="badge bg-{{ $appointment->status->badge() }}">
+                                            {{ $appointment->status->label() }}
                                         </span>
+
                                     </td>
-
                                     @if (auth()->check() && auth()->user()->role === 'admin')
-                                        <td class="align-middle text-center" style="min-width:150px;">
-                                            <div class="d-flex justify-content-center gap-3">
+                                        <td class="text-center">
 
-                                                <!-- تأیید -->
-                                                <i class="fa-solid fa-circle-check text-success fs-5" title="تأیید"
-                                                    wire:click="updateStatus({{ $appointment->id }}, 'confirmed')"></i>
+                                            <div class="row g-2 justify-content-center text-center" style="width:100px">
 
-                                                <!-- در انتظار -->
-                                                <i class="fa-solid fa-clock text-warning fs-5" title="در انتظار"
-                                                    wire:click="updateStatus({{ $appointment->id }}, 'pending')"></i>
+                                                <div class="col-4">
+                                                    <i class="fa-solid fa-clock text-warning fs-5" title="در انتظار"
+                                                        style="cursor:pointer"
+                                                        wire:click="updateStatus({{ $appointment->id }}, 'pending')">
+                                                    </i>
+                                                </div>
 
-                                                <!-- لغو -->
-                                                <i class="fa-solid fa-circle-xmark text-danger fs-5" title="لغو"
-                                                    wire:click="updateStatus({{ $appointment->id }}, 'canceled')"></i>
+                                                <div class="col-4">
+                                                    <i class="fa-solid fa-user-check text-info fs-5"
+                                                        title="تخصیص داده شده" style="cursor:pointer"
+                                                        wire:click="updateStatus({{ $appointment->id }}, 'assigned')">
+                                                    </i>
+                                                </div>
+
+                                                <div class="col-4">
+                                                    <i class="fa-solid fa-circle-check text-primary fs-5"
+                                                        title="تایید شده" style="cursor:pointer"
+                                                        wire:click="updateStatus({{ $appointment->id }}, 'accepted')">
+                                                    </i>
+                                                </div>
+
+                                                <div class="col-4">
+                                                    <i class="fa-solid fa-screwdriver-wrench text-secondary fs-5"
+                                                        title="در حال انجام" style="cursor:pointer"
+                                                        wire:click="updateStatus({{ $appointment->id }}, 'in_progress')">
+                                                    </i>
+                                                </div>
+
+                                                <div class="col-4">
+                                                    <i class="fa-solid fa-circle-check text-success fs-5"
+                                                        title="انجام شده" style="cursor:pointer"
+                                                        wire:click="updateStatus({{ $appointment->id }}, 'completed')">
+                                                    </i>
+                                                </div>
+
+                                                <div class="col-4">
+                                                    <i class="fa-solid fa-circle-xmark text-danger fs-5" title="لغو شده"
+                                                        style="cursor:pointer"
+                                                        wire:click="updateStatus({{ $appointment->id }}, 'cancelled')">
+                                                    </i>
+                                                </div>
 
                                             </div>
+
                                         </td>
                                     @endif
 
                                 </tr>
+
                             @empty
+
                                 <tr>
+
                                     <td colspan="{{ auth()->check() && auth()->user()->role === 'admin' ? 7 : 6 }}"
                                         class="text-center py-4">
-                                        هنوز نوبتی ثبت نشده است
+
+                                        هنوز درخواستی ثبت نشده است
+
                                     </td>
+
                                 </tr>
                             @endforelse
+
                         </tbody>
+
                     </table>
+
                 </div>
+
                 <div class="mt-4">
+
                     {{ $appointments->links() }}
+
                 </div>
+
+
             </div>
+
         </div>
+
     </div>
+
 </div>

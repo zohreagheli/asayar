@@ -7,7 +7,7 @@ use Livewire\WithPagination;
 use App\Models\Message;
 use Livewire\Attributes\Layout;
 
-#[Layout('layouts.admin')]
+
 class ChatAdmin extends Component
 {
     use WithPagination;
@@ -15,6 +15,18 @@ class ChatAdmin extends Component
     public $selectedUser = null;    // شناسه کاربر انتخاب‌شده
     public $chatMessages = [];      // پیام‌های کاربر
     public $replyText = '';         // متن پاسخ ادمین
+    public $pageTitle = 'پشتیبانی آنلاین';
+
+    public $breadcrumbs = [
+        [
+            'title' => 'داشبورد',
+            'url' => '/dashboard',
+        ],
+        [
+            'title' => 'پشتیبانی آنلاین',
+            'url' => null,
+        ],
+    ];
 
     protected $paginationTheme = 'bootstrap';
 
@@ -72,13 +84,24 @@ class ChatAdmin extends Component
     }
 
     public function render()
-    {
-        // paginate جدول کاربران
-        $userList = Message::selectRaw('COALESCE(user_id, guest_id) as identifier, MAX(created_at) as last_message_at')
-            ->groupBy('identifier')
-            ->orderByDesc('last_message_at')
-            ->paginate(5);
+{
+    $userList = Message::selectRaw(
+        'COALESCE(user_id, guest_id) as identifier,
+         MAX(created_at) as last_message_at'
+    )
+        ->groupBy('identifier')
+        ->orderByDesc('last_message_at')
+        ->paginate(10);
 
-        return view('livewire.admin.chat-admin', compact('userList'));
-    }
+    return view(
+        'livewire.admin.chat-admin',
+        compact('userList')
+    )->layout(
+        'layouts.admin',
+        [
+            'pageTitle' => $this->pageTitle,
+            'breadcrumbs' => $this->breadcrumbs,
+        ]
+    );
+}
 }

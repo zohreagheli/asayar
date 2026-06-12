@@ -2,73 +2,178 @@
 
 namespace App\Livewire\Admin;
 
+use App\Models\GalleryImage;
+use Illuminate\Support\Facades\Storage;
 use Livewire\Component;
 use Livewire\WithFileUploads;
-use App\Models\GalleryImage;
-use Livewire\Attributes\Layout;
-use Illuminate\Support\Facades\Storage;
+use Livewire\WithPagination;
 
-#[Layout('layouts.admin')]
 class GalleryManager extends Component
 {
     use WithFileUploads;
+    use WithPagination;
 
-    public $images = [];
-    public $titles = []; // عنوان هر تصویر
+    protected $paginationTheme = 'bootstrap';
 
-    public $editId = null; // برای ویرایش بعدی
+    public $image;
+    public $title;
 
-    public function save()
+    public $editingId = null;
+
+    public $showDeleteModal = false;
+    public $deleteId = null;
+
+    public $pageTitle = 'مدیریت گالری تصاویر';
+
+    public $breadcrumbs = [
+        [
+            'title' => 'داشبورد',
+            'url' => '/dashboard',
+        ],
+        [
+            'title' => 'گالری تصاویر',
+            'url' => null,
+        ],
+    ];
+
+    protected function rules()
     {
-        $this->validate([
-            'images.*' => 'image|max:2048',
-            'titles.*' => 'nullable|string|max:255',
-        ]);
+        return [
+            'image' => $this->editingId
+                ? 'nullable|image|max:2048'
+                : 'required|image|max:2048',
 
-        foreach ($this->images as $index => $image) {
-            $path = $image->store('gallery', 'public');
+            'title' => 'required|string|max:255',
+        ];
+    }
 
-            GalleryImage::create([
-                'image' => $path,
-                'title' => $this->titles[$index] ?? null,
-            ]);
-        }
+    protected function messages()
+{
+    return [
 
-        $this->reset(['images', 'titles']);
-        session()->flash('success', 'تصاویر با موفقیت اضافه شدند.');
+        'image.required' => 'انتخاب تصویر الزامی است.',
+        'image.image'    => 'فایل انتخاب شده باید تصویر باشد.',
+        'image.max'      => 'حجم تصویر نباید بیشتر از ۲ مگابایت باشد.',
+
+        'title.max'      => 'عنوان تصویر نمی‌تواند بیشتر از ۲۵۵ کاراکتر باشد.',
+         'title.required'=>'عنوان تصویر نمی تواند خالی باشد',
+
+    ];
+}
+
+protected function validationAttributes()
+{
+    return [
+
+        'image' => 'تصویر',
+        'title' => 'عنوان تصویر',
+
+    ];
+}
+
+    public function create()
+    {
+        $this->resetForm();
+
+        $this->dispatch('open-modal');
     }
 
     public function edit($id)
     {
-        $this->editId = $id;
-        $this->titles[$id] = GalleryImage::find($id)->title;
+        $image = GalleryImage::findOrFail($id);
+
+        $this->editingId = $image->id;
+        $this->title = $image->title;
+
+        $this->dispatch('open-modal');
     }
 
-    public function update($id)
+    public function save()
     {
-        $this->validate([
-            "titles.$id" => 'nullable|string|max:255',
-        ]);
+        $this->resetErrorBag();
+        $this->validate();
 
-        $image = GalleryImage::findOrFail($id);
-        $image->update(['title' => $this->titles[$id]]);
-        $this->editId = null;
+        if ($this->editingId) {
 
-        session()->flash('success', 'عنوان تصویر ویرایش شد.');
+            $gallery = GalleryImage::findOrFail($this->editingId);
+
+            $data = [
+                'title' => $this->title,
+            ];
+
+            if ($this->image) {
+
+                Storage::disk('public')->delete($gallery->image);
+
+                $data['image'] = $this->image->store('gallery', 'public');
+            }
+
+            $gallery->update($data);
+
+            $message = 'تصویر ویرایش شد';
+        } else {
+
+            GalleryImage::create([
+                'image' => $this->image->store('gallery', 'public'),
+                'title' => $this->title,
+            ]);
+
+            $message = 'تصویر با موفقیت اضافه شد';
+        }
+
+        $this->dispatch('close-modal');
+
+        $this->resetForm();
+
+        $this->dispatch(
+            'show-toast',
+            message: $message,
+            type: 'success'
+        );
     }
 
-    public function delete($id)
+    public function confirmDelete($id)
     {
-        $image = GalleryImage::findOrFail($id);
+        $this->deleteId = $id;
+        $this->showDeleteModal = true;
+    }
+
+    public function deleteImage()
+    {
+        $image = GalleryImage::findOrFail($this->deleteId);
+
         Storage::disk('public')->delete($image->image);
+
         $image->delete();
 
-        session()->flash('success', 'تصویر حذف شد.');
+        $this->showDeleteModal = false;
+
+        $this->dispatch(
+            'show-toast',
+            message: 'تصویر حذف شد',
+            type: 'success'
+        );
+    }
+
+    private function resetForm()
+    {
+        $this->reset([
+            'image',
+            'title',
+            'editingId',
+        ]);
     }
 
     public function render()
     {
-        $gallery = GalleryImage::latest()->get();
-        return view('livewire.admin.gallery-manager', compact('gallery'));
+        return view('livewire.admin.gallery-manager', [
+            'gallery' => GalleryImage::latest()->paginate(12),
+        ])->layout(
+            'layouts.admin',
+            [
+                'pageTitle' => $this->pageTitle,
+                'breadcrumbs' => $this->breadcrumbs,
+            ]
+        );
     }
 }

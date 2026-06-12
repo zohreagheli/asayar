@@ -3,107 +3,156 @@
 namespace App\Livewire\Auth;
 
 use Livewire\Component;
-use App\Services\OtpService;
 use App\Models\User;
-use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Cache;
 use Livewire\Attributes\Layout;
 
 #[Layout('layouts.auth')]
 class LoginWithOtp extends Component
 {
-    public $mobile; // بدون +98 و بدون صفر: مثال 9123456789
+    public $mobile;
     public $otp;
     public $otpSent = false;
 
-    protected $otpTtl = 300;       // 5 دقیقه اعتبار OTP
-    protected $rateLimitTtl = 60;  // فاصله بین ارسال‌ها 60 ثانیه
+    protected $rateLimitTtl = 60;
 
-    /**
-     * ارسال OTP
-     */
     public function sendOtp()
     {
         $this->resetValidation();
 
         $this->validate([
-            'mobile' => ['required','regex:/^[1-9][0-9]{9}$/'],
+            'mobile' => ['required', 'regex:/^[1-9][0-9]{9}$/'],
         ], [
             'mobile.required' => 'شماره موبایل الزامی است',
-            'mobile.regex' => 'شماره موبایل باید ۱۰ رقم و بدون صفر ابتدای شماره وارد شود.',
+            'mobile.regex' => 'شماره موبایل باید ۱۰ رقم و بدون صفر ابتدای شماره وارد شود',
         ]);
-
-        if (Str::startsWith($this->mobile, '0')) {
-            $this->addError('mobile', 'شماره موبایل را بدون صفر وارد کنید.');
-            return;
-        }
 
         $fullMobile = '+98' . $this->mobile;
 
-        // Rate Limit
         $rateKey = "otp-rate:{$fullMobile}";
+
         if (Cache::has($rateKey)) {
-            $this->addError('mobile', 'لطفاً چند ثانیه صبر کنید و دوباره تلاش کنید.');
+            $this->addError(
+                'mobile',
+                'لطفاً چند ثانیه صبر کنید و دوباره تلاش کنید.'
+            );
+
             return;
         }
 
-        // بررسی وجود کاربر
-        $user = User::where('mobile', $fullMobile)->first();
-        if (!$user) {
-            $this->addError('mobile', 'کاربری با این شماره وجود ندارد.');
-            return;
+        /*
+        |--------------------------------------------------------------------------
+        | محیط لوکال
+        |--------------------------------------------------------------------------
+        */
+        if (app()->environment('local')) {
+
+            Cache::put(
+                "otp-code:{$fullMobile}",
+                '1234',
+                now()->addMinutes(5)
+            );
+
+            session()->flash(
+                'success',
+                'محیط تست: کد ورود 1234 می‌باشد'
+            );
+        } else {
+
+            $result = \App\Services\OtpService::sendOtp(
+                $fullMobile,
+                [
+                    'use_template' => false,
+                    'length' => 4,
+                    'ttl' => 300
+                ]
+            );
+
+            if (!$result['ok']) {
+                $this->addError('mobile', $result['message']);
+                return;
+            }
+
+            session()->flash(
+                'success',
+                'کد تایید ارسال شد'
+            );
         }
 
-        // ارسال OTP
-        $result = OtpService::sendOtp($fullMobile, [
-            'use_template' => false,
-            'length' => 4,
-            'ttl' => $this->otpTtl
-        ]);
-
-        if (!$result['ok']) {
-            $this->addError('mobile', $result['message']);
-            return;
-        }
-
-        // ثبت Rate Limit
-        Cache::put($rateKey, true, $this->rateLimitTtl);
+        Cache::put(
+            $rateKey,
+            true,
+            now()->addSeconds($this->rateLimitTtl)
+        );
 
         $this->otpSent = true;
-        session()->flash('success', 'کد به شماره موبایل شما ارسال شد.');
     }
 
-    /**
-     * تایید OTP و ورود کاربر
-     */
     public function verifyOtp()
     {
         $this->resetValidation();
 
         $this->validate([
-            'otp' => ['required','digits:4'],
+            'otp' => ['required', 'digits:4'],
         ], [
-            'otp.required' => 'کد الزامی است',
+            'otp.required' => 'کد تایید الزامی است',
             'otp.digits' => 'کد باید ۴ رقمی باشد',
         ]);
 
         $fullMobile = '+98' . $this->mobile;
 
-        if (!OtpService::verifyOtp($fullMobile, $this->otp)) {
-            $this->addError('otp', 'کد وارد شده صحیح نیست یا منقضی شده است.');
-            return;
+        /*
+        |--------------------------------------------------------------------------
+        | محیط لوکال
+        |--------------------------------------------------------------------------
+        */
+        if (app()->environment('local')) {
+
+            $cachedOtp = Cache::get("otp-code:{$fullMobile}");
+
+            if ($cachedOtp !== $this->otp) {
+                $this->addError(
+                    'otp',
+                    'کد وارد شده صحیح نیست'
+                );
+
+                return;
+            }
+
+        } else {
+
+            if (!\App\Services\OtpService::verifyOtp(
+                $fullMobile,
+                $this->otp
+            )) {
+                $this->addError(
+                    'otp',
+                    'کد وارد شده صحیح نیست یا منقضی شده است'
+                );
+
+                return;
+            }
         }
 
-        // ورود کاربر
-        $user = User::where('mobile', $fullMobile)->first();
-        if ($user) {
-            Auth::login($user);
-            session()->flash('success', 'ورود موفقیت‌آمیز بود.');
-            return redirect()->intended('/');
-        }
+        /*
+        |--------------------------------------------------------------------------
+        | ساخت خودکار کاربر
+        |--------------------------------------------------------------------------
+        */
+        $user = User::firstOrCreate(
+            [
+                'mobile' => $fullMobile
+            ],
+            [
+                'name' => 'کاربر ' . substr($this->mobile, -4),
+                'role' => 'user',
+            ]
+        );
 
-        $this->addError('mobile', 'کاربر پیدا نشد.');
+        Auth::login($user);
+
+        return redirect()->intended('/dashboard');
     }
 
     public function render()

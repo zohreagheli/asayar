@@ -1,209 +1,235 @@
-<div class="container py-4">
-    <div class="app-content">
+<div class="row justify-content-center">
 
-        {{-- عنوان --}}
-        <div class="d-flex justify-content-between align-items-center mb-3">
-            <h4 class="text-primary"> ثبت نوبت</h4>
-        </div>
+    <div class="col-xl-10 col-lg-11">
 
-        {{-- Toast پیام‌ها --}}
-        <div class="position-fixed top-0 start-50 translate-middle-x p-3" style="z-index: 9999;">
-            @if (session('success'))
-                <div class="toast align-items-center text-bg-success border-0 show">
-                    <div class="d-flex">
-                        <div class="toast-body">{{ session('success') }}</div>
-                        <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+        <div class="card border-0 shadow-sm rounded-4">
+
+            <div class="card-body p-4">
+
+                @if (session('success'))
+                    <div class="alert alert-success">
+                        {{ session('success') }}
                     </div>
-                </div>
-            @endif
+                @endif
 
-            @if (session('error'))
-                <div class="toast align-items-center text-bg-danger border-0 show">
-                    <div class="d-flex">
-                        <div class="toast-body">{{ session('error') }}</div>
-                        <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
-                    </div>
-                </div>
-            @endif
-        </div>
+                <form wire:submit.prevent="save">
 
-        <form wire:submit.prevent="save" class="card shadow">
-            <div class="card-body">
+                    <div class="row g-4">
 
-                {{-- مرحله ۱ --}}
-                <div class="step-1" style="{{ $step == 1 ? '' : 'display:none;' }}">
-                    <div class="row">
+                        {{-- سرویس --}}
+                        <div class="col-md-6">
 
-                        {{-- خدمت --}}
-                        <div class="col-md-6 mb-3">
-                            <div class="input-group">
-                                <span class="label-inside">خدمت</span>
-                                <select wire:model="selectedService" class="form-select">
-                                    <option value="">-- انتخاب کنید --</option>
+                            <label class="form-label fw-semibold">
+                                نوع سرویس
+                            </label>
+
+                            <div class="input-group custom-input-group">
+
+                                <span class="input-group-text">
+                                    <i class="fe fe-settings"></i>
+                                </span>
+
+                                <select class="form-select" wire:model="service_id">
+
+                                    <option value="">
+                                        انتخاب کنید
+                                    </option>
+
                                     @foreach ($services as $service)
                                         <option value="{{ $service->id }}">
-                                            {{ $service->name }} ({{ $service->duration }} دقیقه)
+                                            {{ $service->name }}
                                         </option>
                                     @endforeach
+
                                 </select>
+
                             </div>
-                            @error('selectedService')
-                                <span class="text-danger">{{ $message }}</span>
+
+                            @error('service_id')
+                                <small class="text-danger">
+                                    {{ $message }}
+                                </small>
                             @enderror
+
                         </div>
 
                         {{-- تاریخ --}}
-                        <div class="col-md-6 mb-3">
-                            <div class="input-group">
-                                <span class="label-inside">تاریخ</span>
-                                <input type="text" id="datepicker" class="form-control" autocomplete="off" placeholder="تاریخ را انتخاب کنید">
-                                <input type="hidden" wire:model="date" id="appointment_date">
+                        <div class="col-md-6">
+
+                            <label class="form-label fw-semibold">
+                                تاریخ مراجعه
+                            </label>
+
+                            <div class="input-group custom-input-group">
+
+                                <span class="input-group-text">
+                                    <i class="fe fe-calendar"></i>
+                                </span>
+
+                                <input id="datepicker" data-jdp autocomplete="off" class="form-control have-datepicker"
+                                    placeholder="انتخاب تاریخ">
+
                             </div>
-                            @if ($date)
-                                <div class="alert alert-info mt-2">
-                                    تاریخ انتخاب شده:
-                                    <strong>{{ $this->convertToPersianNumbers($date) }}</strong>
-                                </div>
-                            @endif
+
                             @error('date')
-                                <span class="text-danger">{{ $message }}</span>
+                                <small class="text-danger">
+                                    {{ $message }}
+                                </small>
                             @enderror
+
+                        </div>
+
+                        {{-- زمان --}}
+                        <div class="col-md-6">
+
+                            <label class="form-label fw-semibold">
+                                بازه زمانی
+                            </label>
+
+                            <div class="input-group custom-input-group">
+
+                                <span class="input-group-text">
+                                    <i class="fe fe-clock"></i>
+                                </span>
+
+                                <select wire:model="time" class="form-select">
+
+                                    <option value="">
+                                        انتخاب کنید
+                                    </option>
+
+                                    <option value="08:00-12:00">
+                                        ۸ تا ۱۲
+                                    </option>
+
+                                    <option value="12:00-16:00">
+                                        ۱۲ تا ۱۶
+                                    </option>
+
+                                    <option value="16:00-20:00">
+                                        ۱۶ تا ۲۰
+                                    </option>
+
+                                </select>
+
+                            </div>
+
+                            @error('time')
+                                <small class="text-danger">
+                                    {{ $message }}
+                                </small>
+                            @enderror
+
                         </div>
 
                         {{-- آدرس --}}
-                        <div class="col-md-6 mb-3">
-                            <div class="input-group">
-                                <span class="label-inside">آدرس</span>
-                                <textarea wire:model="address" class="form-control" rows="3" placeholder="آدرس را وارد کنید..."></textarea>
+                        <div class="col-md-6">
+
+                            <label class="form-label fw-semibold">
+                                آدرس
+                            </label>
+
+                            <div class="input-group custom-input-group">
+
+                                <span class="input-group-text">
+                                    <i class="fe fe-map-pin"></i>
+                                </span>
+
+                                <input type="text" wire:model="address" class="form-control"
+                                    placeholder="آدرس را وارد کنید">
+
                             </div>
+
                             @error('address')
-                                <span class="text-danger">{{ $message }}</span>
+                                <small class="text-danger">
+                                    {{ $message }}
+                                </small>
                             @enderror
+
                         </div>
 
-                        {{-- سرویس‌کار --}}
-                        <div class="col-md-6 mb-3">
-                            <div class="input-group">
-                                <span class="label-inside">سرویس‌کار</span>
-                                <select wire:model="selectedTechnician" class="form-select">
-                                    <option value="">-- انتخاب کنید --</option>
-                                    @foreach ($technicians as $technician)
-                                        <option value="{{ $technician->id }}">
-                                            {{ $technician->name }}
-                                            {{ $technician->expertise ? '(' . $technician->expertise . ')' : '' }}
-                                        </option>
-                                    @endforeach
-                                </select>
+                        {{-- توضیحات --}}
+                        <div class="col-12">
+
+                            <label class="form-label fw-semibold">
+                                توضیحات
+                            </label>
+
+                            <div class="input-group custom-input-group">
+
+                                <span class="input-group-text textarea-icon">
+                                    <i class="fe fe-file-text"></i>
+                                </span>
+
+                                <textarea wire:model="description" class="form-control" rows="4" placeholder="توضیحات تکمیلی"></textarea>
+
                             </div>
-                            @error('selectedTechnician')
-                                <span class="text-danger">{{ $message }}</span>
-                            @enderror
+
                         </div>
-
-                        @if ($selectedTechnician === 'suggest')
-                            <button type="button" class="btn btn-outline-primary" wire:click="suggestTechnicians">
-                                پیشنهاد سرویس‌کار
-                            </button>
-                        @endif
-
-                        @if ($showTechnicianSuggestions)
-                            <div class="list-group mt-2">
-                                @foreach ($suggestedTechnicians as $tech)
-                                    <button type="button" class="list-group-item list-group-item-action"
-                                        wire:click="$set('selectedTechnician', '{{ $tech->id }}')">
-                                        {{ $tech->name }}
-                                        {{ $tech->expertise ? '(' . $tech->expertise . ')' : '' }}
-                                    </button>
-                                @endforeach
-                            </div>
-                        @endif
 
                     </div>
 
-                    <button type="button" class="btn btn-primary mt-3" wire:click="nextStep">
-                        ادامه و انتخاب زمان
-                    </button>
-                </div>
+                    <div class="mt-4 text-end">
 
-                {{-- مرحله ۲ --}}
-                <div class="step-2" style="{{ $step == 2 ? '' : 'display:none;' }}">
-                    @if(count($availableSlots) > 0)
-                        <div class="mb-3">
-                            <label class="form-label">ساعت‌های موجود</label>
-                            <div class="list-group">
-                                @foreach($availableSlots as $slot)
-                                    @if($slot['available'])
-                                        <button type="button" class="list-group-item list-group-item-action {{ $time === $slot['id'] ? 'active' : '' }}" wire:click="$set('time','{{ $slot['id'] }}')">
-                                            {{ $slot['display_persian'] }}
-                                        </button>
-                                    @else
-                                        <div class="list-group-item disabled">
-                                            {{ $slot['display_persian'] }}
-                                            - <small class="text-muted">غیر قابل انتخاب</small>
-                                        </div>
-                                    @endif
-                                @endforeach
-                            </div>
-                            @error('time')<span class="text-danger">{{ $message }}</span>@enderror
-                        </div>
-                    @else
-                        <div class="alert alert-warning">برای این سرویس‌کار زمانی وجود ندارد.</div>
-                    @endif
+                        <button type="submit" class="btn btn-primary px-5 rounded-pill">
 
-                    <div class="d-flex gap-2 mt-3">
-                        <button type="button" class="btn btn-secondary" wire:click="prevStep">بازگشت</button>
-                        <button type="submit" class="btn btn-success" @if(!$time) disabled @endif>ثبت نوبت</button>
+                            ثبت درخواست
+
+                        </button>
+
                     </div>
-                </div>
+
+                </form>
 
             </div>
-        </form>
+
+        </div>
+
     </div>
+
 </div>
 
-@push('scripts')
-<script>
-    // فعال‌سازی Toast
-    document.querySelectorAll('.toast').forEach(toastEl => {
-        new bootstrap.Toast(toastEl).show();
-    });
 
-    // Init PersianDatepicker
-    function initDatePicker(){
-        let dpInput = $("#datepicker");
-        let hiddenInput = document.getElementById('appointment_date');
-        if(!dpInput.length || !dpInput.is(':visible')) return;
+@push('js')
+    <script src="{{ asset('libs/datepicker/jalalidatepicker.min.js') }}"></script>
 
-        if(dpInput.data("datepicker")){
-            dpInput.data("datepicker").destroy();
-        }
+    <script>
+        function initDatepicker() {
 
-        dpInput.persianDatepicker({
-            format: "YYYY/MM/DD",
-            altField: "#appointment_date",
-            altFormat: "YYYY/MM/DD",
-            initialValue: false,
-            autoClose: true,
-            observer: true,
-            onSelect: function(){
-                let persianDate = hiddenInput.value;
-                let englishDate = persianDate.replace(/[۰-۹]/g, d => '۰۱۲۳۴۵۶۷۸۹'.indexOf(d));
-                hiddenInput.value = englishDate;
-                hiddenInput.dispatchEvent(new Event('input'));
+            if (!window.jalaliDatepicker) {
+                return;
             }
-        });
 
-        if(hiddenInput.value){
-            dpInput.data("datepicker").setDate(hiddenInput.value);
+            jalaliDatepicker.startWatch();
+
+            const input = document.getElementById('datepicker');
+
+            if (!input) {
+                return;
+            }
+
+            function toPersianNumbers(str) {
+                const en = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
+                const fa = ['۰', '۱', '۲', '۳', '۴', '۵', '۶', '۷', '۸', '۹'];
+
+                return str.replace(/[0-9]/g, function(w) {
+                    return fa[en.indexOf(w)];
+                });
+            }
+            input.addEventListener('change', function() {
+
+                const value = this.value;
+
+                const component = Livewire.find(
+                    document.querySelector('[wire\\:id]').getAttribute('wire:id')
+                );
+
+                component.set('date', value);
+                this.value = toPersianNumbers(value);
+            });
         }
-    }
 
-    // اجرا در بارگذاری اولیه
-    document.addEventListener("DOMContentLoaded", initDatePicker);
-
-    // اجرا بعد از هر رندر Livewire
-    Livewire.hook('message.processed', () => {
-        setTimeout(initDatePicker, 50);
-    });
-</script>
+        document.addEventListener('DOMContentLoaded', initDatepicker);
+        document.addEventListener('livewire:navigated', initDatepicker);
+    </script>
 @endpush

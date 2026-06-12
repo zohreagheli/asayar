@@ -33,6 +33,8 @@
     <link id="theme" rel="stylesheet" type="text/css" media="all" href="{{ asset('assets/panel/colors/color1.css')}}" />
     <link href="{{asset('assets/panel/switcher/css/switcher.css')}}" rel="stylesheet" />
     <link href="{{ asset('assets/panel/switcher/demo.css')}}" rel="stylesheet" />
+    <link rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
 
     <!--RTL STYLE-->
     <!-- Material Icons -->
@@ -154,6 +156,25 @@
 
 <!-- Switcher js
 <script src="{{ asset('assets/panel/switcher/js/switcher.js')}}"></script>-->
+ <!-- Toastify -->
+    <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+     <script>
+    document.addEventListener('livewire:init', () => {
+
+        Livewire.on('show-toast', (event) => {
+
+            Toastify({
+                text: event.message,
+                duration: 3000,
+                gravity: "top",
+                position: "right",
+                backgroundColor: event.type === 'success' ? "green" : "red",
+            }).showToast();
+
+        });
+
+    });
+</script>
 
 </body>
 

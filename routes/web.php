@@ -32,9 +32,11 @@ use App\Livewire\Admin\ChatAdmin;
 use App\Livewire\Auth\ResetPassword;
 use App\Livewire\Auth\AdminLoginForm;
 use App\Livewire\Auth\LoginWithOtp;
+use App\Livewire\DashboardUser;
+
 Route::middleware('guest')->group(function () {
     Route::get('/register', RegisterForm::class)->name('register');
-    Route::get('/login', LoginForm::class)->name('login');
+    Route::get('/login', LoginWithOtp::class)->name('login');
     Route::get('/forget-password', ForgetPassword::class)->name('password.request');
     Route::get('/admin/login', AdminLoginForm::class)->name('admin.login');
 });
@@ -55,8 +57,11 @@ Route::middleware('auth')->group(function () { Route::get('/dashboard', function
         $user = Auth::user();
         if ($user->role === 'admin') {
             return redirect()->route('admin.dashboard');
-        } else {
-            return view('basic/dashboard');  }  })->name('dashboard');
+        }
+         return redirect()->route('dashboard') ;
+        });
+
+Route::get('/dashboard', DashboardUser::class)->name('dashboard');
 
 Route::get('/profile', UpdateProfile::class)->name('profile');
 Route::get('/appointments/create', CreateAppointment::class)->name('appointments.create');
@@ -74,9 +79,7 @@ Route::get('/contact', Contact::class)->name('contact');
 Route::get('/about', About::class)->name('about');
 Route::get('/support', ChatSupport::class)->name('support');
 
-Route::get('/contact-button', function () {
-    return view('contact-button');
-})->name('contact-button');
+Route::get('/contact-button', function () {return view('contact-button');})->name('contact-button');
 Route::get('/login-otp', LoginWithOtp::class) ->name('login.otp');
 Route::get('/tickets/show/{ticket}', Showtikets::class)->name('tickets.show');
 Route::get('/tickets/show/{ticket}/download', function (Ticket $ticket) {

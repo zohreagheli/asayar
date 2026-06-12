@@ -1,80 +1,227 @@
-<div class="container">
-    <div class="row justify-content-center">
-        <div class="col-md-8">
-            <div class="card">
-                <div class="card-header">ویرایش پروفایل</div>
+<div class="row">
 
-                <div class="card-body">
-                    @if (session('message'))
-                        <div class="alert alert-success">
-                            {{ session('message') }}
-                        </div>
-                    @endif
+    {{-- ستون راست --}}
+    <div class="col-xl-4">
 
-                    <form wire:submit.prevent="updateProfile">
-                        <!-- نمایش عکس فعلی و پیش‌نمایش -->
-                        <div class="mb-3 text-center">
+        <div class="card shadow-sm border-0">
 
-                            <div class="avatar-container">
-                                @if ($avatar)
-                                    <img src="{{ $avatar->temporaryUrl() }}" class="profile-avatar-img"
-                                        alt="تصویر موقت">
-                                @else
-                                    <img src="{{ $currentAvatar ? asset('storage/avatars/' . $currentAvatar) : asset('assets/images/default-avatar.jpg') }}"
-                                        class="profile-avatar-img" alt="تصویر پروفایل">
-                                @endif
-                            </div>
-                        </div>
+            <div class="card-header">
+                <h4 class="card-title mb-0">
+                    اطلاعات کاربر
+                </h4>
+            </div>
 
-                        <!-- آپلود عکس جدید -->
-                        <div class="mb-3">
-                            <label for="avatar" class="form-label">تغییر عکس پروفایل</label>
-                            <input type="file" class="form-control" id="avatar" wire:model="avatar"
-                                accept="image/*">
-                            @error('avatar')
-                                <span class="text-danger">{{ $message }}</span>
-                            @enderror
-                        </div>
+            <div class="card-body text-center">
 
-                        <!-- نام -->
-                        <div class="mb-3">
-                            <label for="name" class="form-label">نام</label>
-                            <input type="text" class="form-control" id="name" wire:model="name">
-                            @error('name')
-                                <span class="text-danger">{{ $message }}</span>
-                            @enderror
-                        </div>
+                @if ($avatar)
+                    <img src="{{ $avatar->temporaryUrl() }}"
+                        class="rounded-circle mb-3"
+                        width="140">
+                @else
+                    <img src="{{ $currentAvatar
+                        ? asset('storage/avatars/'.$currentAvatar)
+                        : asset('assets/images/default-avatar.jpg') }}"
+                        class="rounded-circle mb-3"
+                        width="140">
+                @endif
 
-                        <!-- ایمیل
-                        <div class="mb-3">
-                            <label for="email" class="form-label">ایمیل</label>
-                            <input type="email" class="form-control" id="email" wire:model="email">-->
-                        @error('email')
-                            <span class="text-danger">{{ $message }}</span>
-                        @enderror
-                </div>
-                <!-- موبایل
-                        <div class="mb-3">
-                            <label for="mobile" class="form-label">شماره موبایل</label>
-                            <div class="input-group">
-                                <span class="input-group-text">+98</span>
-                                <input type="text" class="form-control" id="mobile" wire:model="mobile"
-                                    maxlength="10" placeholder="9123456789">-->
-                <div class="text-center">
-                    <button type="submit" class="btn btn-primary btn-sm w-auto">
-                        ذخیره تغییرات
-                    </button>
-                </div>
+                <h5 class="fw-bold">
+                    {{ $name }}
+                </h5>
+
+                <p class="text-muted">
+                    {{ $email }}
+                </p>
+
+                @if($mobile)
+                    <span class="badge bg-primary">
+                        {{ persian_numbers($mobile) }}
+                    </span>
+                @endif
 
             </div>
-            @error('mobile')
-                <span class="text-danger">{{ $message }}</span>
-            @enderror
+
         </div>
 
-        </form>
+        {{-- تغییر رمز عبور --}}
+        <div class="card shadow-sm border-0">
+
+            <div class="card-header">
+                <h4 class="card-title mb-0">
+                    تغییر رمز عبور
+                </h4>
+            </div>
+
+            <div class="card-body">
+
+                <div class="mb-3">
+                    <label class="form-label">
+                        رمز فعلی
+                    </label>
+
+                    <input
+                        type="password"
+                        wire:model="current_password"
+                        class="form-control">
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">
+                        رمز جدید
+                    </label>
+
+                    <input
+                        type="password"
+                        wire:model="new_password"
+                        class="form-control">
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">
+                        تکرار رمز جدید
+                    </label>
+
+                    <input
+                        type="password"
+                        wire:model="new_password_confirmation"
+                        class="form-control">
+                </div>
+
+                <button
+                    wire:click="changePassword"
+                    class="btn btn-primary w-100">
+
+                    بروزرسانی رمز عبور
+
+                </button>
+
+            </div>
+
+        </div>
+
     </div>
-</div>
-</div>
-</div>
+
+    {{-- ستون چپ --}}
+    <div class="col-xl-8">
+
+        <div class="card shadow-sm border-0">
+
+            <div class="card-header">
+                <h4 class="card-title mb-0">
+                    ویرایش پروفایل
+                </h4>
+            </div>
+
+            <div class="card-body">
+
+                <form wire:submit.prevent="updateProfile">
+
+                    <div class="row">
+
+                        <div class="col-md-6 mb-4">
+
+                            <label class="form-label">
+                                نام و نام خانوادگی
+                            </label>
+
+                            <input
+                                type="text"
+                                wire:model="name"
+                                class="form-control">
+
+                            @error('name')
+                                <small class="text-danger">
+                                    {{ $message }}
+                                </small>
+                            @enderror
+
+                        </div>
+
+                        <div class="col-md-6 mb-4">
+
+                            <label class="form-label">
+                                ایمیل
+                            </label>
+
+                            <input
+                                type="email"
+                                wire:model="email"
+                                class="form-control">
+
+                            @error('email')
+                                <small class="text-danger">
+                                    {{ $message }}
+                                </small>
+                            @enderror
+
+                        </div>
+
+                        <div class="col-md-6 mb-4">
+
+                            <label class="form-label">
+                                شماره موبایل
+                            </label>
+
+                            <div class="input-group">
+
+                                <span class="input-group-text">
+                                    +98
+                                </span>
+
+                                <input
+                                    type="text"
+                                    wire:model="mobile"
+                                    class="form-control">
+
+                            </div>
+
+                            @error('mobile')
+                                <small class="text-danger">
+                                    {{ $message }}
+                                </small>
+                            @enderror
+
+                        </div>
+
+                        <div class="col-md-6 mb-4">
+
+                            <label class="form-label">
+                                تصویر پروفایل
+                            </label>
+
+                            <input
+                                type="file"
+                                wire:model="avatar"
+                                class="form-control">
+
+                            @error('avatar')
+                                <small class="text-danger">
+                                    {{ $message }}
+                                </small>
+                            @enderror
+
+                        </div>
+
+                    </div>
+
+                    <div class="text-end">
+
+                        <button
+                            type="submit"
+                            class="btn btn-success">
+
+                            ذخیره تغییرات
+
+                        </button>
+
+                    </div>
+
+                </form>
+
+            </div>
+
+        </div>
+
+    </div>
+
 </div>

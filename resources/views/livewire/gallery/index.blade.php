@@ -1,42 +1,142 @@
-<div class="container mt-4">
-     <div class="app-content">
-    <h2 class="mb-4 text-center">📷 گالری تصاویر</h2>
+<div class="container pb-5">
 
-    <div class="mb-3 text-center position-relative">
-        <input wire:model.live="search" type="text" class="form-control w-50 mx-auto"
-               placeholder="جستجو بر اساس عنوان تصویر...">
+    <div class="app-content">
 
-               <div wire:loading wire:target="search"
-                class="spinner-border text-primary position-absolute top-50 end-0 translate-middle-y me-5" role="status"
-                style="width: 1.5rem; height: 1.5rem;">
-                <span class="visually-hidden">در حال جستجو...</span>
+        {{-- سرچ --}}
+        <div class="mb-4 position-relative">
+
+            <div class="input-group w-50 mx-auto shadow-sm">
+
+                <input
+                    type="text"
+                    class="form-control"
+                    placeholder="جستجو بر اساس عنوان تصویر..."
+                    wire:model.live.debounce.500ms="search">
+
+                <span
+                    class="input-group-text text-white border-0"
+                    style="
+                        background:linear-gradient(
+                            135deg,
+                            #6351a7,
+                            #362280
+                        );
+                        min-width:100px;
+                        justify-content:center;
+                    ">
+
+                    جستجو
+
+                </span>
+
             </div>
-    </div>
 
+            {{-- لودر --}}
+            <div
+                wire:loading.flex
+                wire:target="search"
+                class="justify-content-center mt-3">
 
-    <div class="row">
-        @forelse($images as $image)
-            <div class="col-md-3 col-sm-6 mb-4">
-                <div class="card shadow-sm h-100">
-                    <div class="card-img-top" style="height: 200px; display:flex; align-items:center; justify-content:center; background-color: #f8f9fa;">
-                        <img src="{{ asset('storage/' . $image->image) }}" alt="{{ $image->title }}"
-                             style="max-width: 100%; max-height: 100%; object-fit: cover;">
-                    </div>
-                    <div class="card-body text-center">
-                        <h6 class="card-title">{{ $image->title ?? 'بدون عنوان' }}</h6>
-                    </div>
+                <div
+                    class="spinner-border"
+                    style="
+                        color:#6351a7;
+                        width:1.8rem;
+                        height:1.8rem;
+                    ">
                 </div>
-            </div>
-        @empty
-            <div class="col-12 text-center">
-                <p>📭 هیچ تصویری یافت نشد.</p>
-            </div>
-        @endforelse
-    </div>
 
-    <div class="d-flex justify-content-center mt-3">
-        {{ $images->links() }}
+            </div>
+
+        </div>
+
+
+
+        {{-- گالری --}}
+        <div
+            wire:loading.class="opacity-50">
+
+            <div class="row g-4">
+
+                @forelse($images as $image)
+
+                    <div class="col-xl-3 col-lg-4 col-md-6">
+
+                        <div
+                            class="card border-0 shadow-sm rounded-4 h-100 overflow-hidden">
+
+                            <div
+                                style="
+                                    height:240px;
+                                    overflow:hidden;
+                                ">
+
+                                <img
+                                    src="{{ asset('storage/'.$image->image) }}"
+                                    alt="{{ $image->title }}"
+                                    class="w-100 h-100"
+                                    style="
+                                        object-fit:cover;
+                                        transition:.3s;
+                                    ">
+
+                            </div>
+
+                            <div class="card-body text-center">
+
+                                <h6
+                                    class="fw-bold mb-0">
+
+                                    {{ $image->title ?: 'بدون عنوان' }}
+
+                                </h6>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                @empty
+
+                    <div class="col-12">
+
+                        <div
+                            class="text-center py-5">
+
+                            <i
+                                class="fa-solid fa-images fs-1 text-muted mb-3">
+                            </i>
+
+                            <p
+                                class="text-muted mb-0">
+
+                                تصویری یافت نشد
+
+                            </p>
+
+                        </div>
+
+                    </div>
+
+                @endforelse
+
+            </div>
+
+        </div>
+
+        {{-- Pagination --}}
+        @if($images->hasPages())
+
+          <div class="mt-4">
+
+
+                {{ $images->links() }}
+
+            </div>
+
+        @endif
+
     </div>
-</div>
 
 </div>

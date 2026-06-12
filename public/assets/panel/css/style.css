@@ -24008,6 +24008,7 @@ w .top-footer a {
         position: relative;
     }
 
+
     .horizontal.scrollable-layout .horizontal-main {
         position: relative;
     }
@@ -79578,4 +79579,62 @@ body.app-auth {
     white-space: nowrap;
     display: flex;
     align-items: center;
+}
+.glass-btn {
+    width: 100%;
+    padding: 18px 22px;
+    border: none;
+    border-radius: 18px;
+    font-size: 16px;
+    font-weight: 500;
+    color: #fff;
+    backdrop-filter: blur(14px);
+    background: linear-gradient(135deg, rgba(128, 90, 213, 0.65), rgba(56, 189, 248, 0.55));
+    box-shadow:
+        0 6px 18px rgba(0, 0, 0, 0.15),
+        inset 0 1px 2px rgba(255, 255, 255, 0.4);
+    display: flex;
+    justify-content: center; /* متن وسط دکمه */
+    align-items: center;
+    gap: 10px; /* فاصله بین متن و آیکن */
+    flex-direction: row-reverse; /* آیکن سمت راست متن */
+    transition: 0.25s ease;
+    cursor: pointer;
+    position: relative;
+}
+.glass-btn i {
+    font-size: 20px;
+    opacity: 0.9;
+    color: #fff !important;
+}
+
+.glass-btn:hover {
+    transform: translateY(-4px);
+    background: linear-gradient(135deg, rgba(128, 90, 213, 0.8), rgba(56, 189, 248, 0.75));
+    box-shadow:
+        0 10px 25px rgba(0, 0, 0, 0.2),
+        inset 0 1px 3px rgba(255, 255, 255, 0.55);
+}
+.dashboard-buttons-container {
+    margin-top: 120px;
+    display: flex;
+    justify-content: center;
+    text-align: center;
+}
+.glass-btn .btn-text {
+    text-align: center;     /* متن کاملاً وسط */
+
+    color: #fff !important;
+}
+
+.btn-soft-success {
+   background-color:#6f42c1 !important;;
+    color: #fff;
+
+    transition: all 0.2s ease;
+}
+
+.btn-soft-success:hover {
+    background-color: #198754;
+    color: #fff;
 }

@@ -11,8 +11,8 @@
                 <!-- ایمیل -->
                 <div class="wrap-input100 input-group mb-1">
                     <span class="input-group-text bg-white text-muted"><i class="zmdi zmdi-email"></i></span>
-                    <input wire:model="email" class="form-control text-end" type="email" placeholder="ایمیل"
-                        autocomplete="username">
+                    <input wire:model="email" name="email" autocomplete="username" class="form-control text-end" type="email" placeholder="ایمیل"
+                        >
                 </div>
                 @error('email')
                     <span class="text-danger d-block mb-2">{{ $message }}</span>
@@ -21,8 +21,8 @@
                 <!-- موبایل -->
                 <div class="wrap-input100 input-group mb-1">
                     <span class="input-group-text bg-white text-muted">+98</span>
-                    <input wire:model="mobile" class="form-control text-end" maxlength="10"
-                        placeholder="شماره موبایل 9123456789" autocomplete="tel">
+                    <input wire:model="mobile"  name="mobile" autocomplete="tel-national" class="form-control text-end" maxlength="10"
+                        placeholder="شماره موبایل 9123456789" >
                 </div>
                 @error('mobile')
                     <span class="text-danger d-block mb-2">{{ $message }}</span>
@@ -32,7 +32,7 @@
                 <div class="wrap-input100 input-group mb-1 ">
                     <span class="input-group-text bg-white text-muted" style="cursor:pointer;"
                         onclick="togglePassword()"><i class="zmdi zmdi-eye"></i></span>
-                    <input wire:model="password" id="passwordInput" class="form-control text-end" type="password"
+                    <input wire:model="password"  name="password" autocomplete="current-password" id="passwordInput" class="form-control text-end" type="password"
                         placeholder="کلمه عبور">
                 </div>
                 @error('password')

@@ -11,7 +11,7 @@
                 <!-- یوزرنیم -->
                 <div class="wrap-input100 input-group mb-1">
                     <span class="input-group-text bg-white text-muted"><i class="zmdi zmdi-account"></i></span>
-                    <input wire:model="username" class="form-control text-end" type="text" placeholder="نام کاربری">
+                    <input wire:model="username" class="form-control text-end" type="text"   placeholder="نام کاربری">
                 </div>
                 @error('username')
                     <span class="text-danger d-block mb-2">{{ $message }}</span>
@@ -22,7 +22,7 @@
                     <span class="input-group-text bg-white text-muted" onclick="togglePassword()" style="cursor:pointer;">
                         <i class="zmdi zmdi-eye"></i>
                     </span>
-                    <input wire:model="password" id="passwordInput" class="form-control text-end" type="password" placeholder="کلمه عبور">
+                    <input wire:model="password" id="passwordInput" class="form-control text-end" type="password"   placeholder="کلمه عبور">
                 </div>
                 @error('password')
                     <span class="text-danger d-block mb-2">{{ $message }}</span>

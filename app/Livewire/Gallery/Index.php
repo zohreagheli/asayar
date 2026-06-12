@@ -5,16 +5,27 @@ namespace App\Livewire\Gallery;
 use Livewire\Component;
 use Livewire\WithPagination;
 use App\Models\GalleryImage;
-use Livewire\Attributes\Layout;
 
-#[Layout('layouts.main')]
 class Index extends Component
 {
-   use WithPagination;
+    use WithPagination;
+
+    protected $paginationTheme = 'bootstrap';
 
     public $search = '';
 
-    protected $paginationTheme = 'bootstrap'; // برای زیبایی با Bootstrap
+    public $pageTitle = 'گالری تصاویر';
+
+    public $breadcrumbs = [
+        [
+            'title' => 'خانه',
+            'url' => '/',
+        ],
+        [
+            'title' => 'گالری تصاویر',
+            'url' => null,
+        ],
+    ];
 
     public function updatingSearch()
     {
@@ -24,12 +35,25 @@ class Index extends Component
     public function render()
     {
         $images = GalleryImage::query()
-            ->when($this->search, fn($q) =>
-                $q->where('title', 'like', '%' . $this->search . '%')
-            )
-            ->orderBy('created_at', 'desc')
-            ->paginate(8);
+            ->when($this->search, function ($query) {
+                $query->where(
+                    'title',
+                    'like',
+                    '%' . $this->search . '%'
+                );
+            })
+            ->latest()
+            ->paginate(10);
 
-        return view('livewire.gallery.index', compact('images'));
+        return view(
+            'livewire.gallery.index',
+            compact('images')
+        )->layout(
+            'layouts.main',
+            [
+                'pageTitle' => $this->pageTitle,
+                'breadcrumbs' => $this->breadcrumbs,
+            ]
+        );
     }
 }

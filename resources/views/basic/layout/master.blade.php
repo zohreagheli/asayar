@@ -73,9 +73,9 @@
             @yield('content')
             <!-- /MAIN CONTENT -->
 
-            <!-- FOOTER -->
+            <!-- FOOTER
             @include('basic.layout.footer')
-            <!-- /FOOTER -->
+             FOOTER -->
 
             <!-- BACK-TO-TOP -->
             <a href="#top" id="back-to-top"><i class="fa fa-angle-up"></i></a>

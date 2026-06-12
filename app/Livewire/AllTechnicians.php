@@ -7,13 +7,26 @@ use Livewire\WithPagination;
 use App\Models\Technician;
 use Livewire\Attributes\Layout;
 
-#[Layout('layouts.main')]
 class AllTechnicians extends Component
 {
     use WithPagination;
 
-    public $search = ''; 
-    protected $paginationTheme = 'bootstrap'; // اگر Bootstrap داری
+    protected $paginationTheme = 'bootstrap';
+
+    public $search = '';
+
+    public $pageTitle = 'سرویسکاران';
+
+    public $breadcrumbs = [
+        [
+            'title' => 'خانه',
+            'url' => '/',
+        ],
+        [
+            'title' => 'سرویسکاران',
+            'url' => null,
+        ],
+    ];
 
     public function updatingSearch()
     {
@@ -22,7 +35,8 @@ class AllTechnicians extends Component
 
     public function render()
     {
-        $search = $this->search; // حتماً قبل از closure تعریف شود
+        $search = trim($this->search);
+
         $technicians = Technician::query()
             ->when($search, function ($query) use ($search) {
                 $query->where(function ($q) use ($search) {
@@ -31,10 +45,13 @@ class AllTechnicians extends Component
                 });
             })
             ->orderBy('name')
-            ->paginate(12);
+            ->paginate(10);
 
         return view('livewire.all-technicians', [
-            'technicians' => $technicians
+            'technicians' => $technicians,
+        ])->layout('layouts.main', [
+            'pageTitle' => $this->pageTitle,
+            'breadcrumbs' => $this->breadcrumbs,
         ]);
     }
 }
