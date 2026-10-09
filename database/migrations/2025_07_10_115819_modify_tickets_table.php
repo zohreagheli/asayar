@@ -9,6 +9,11 @@ return new class extends Migration
 {
     public function up()
     {
+        // این مایگریشن مخصوص MySQL پروژه قبلی است؛ روی SQLite بی‌اثر است
+        if (DB::getDriverName() !== 'mysql') {
+            return;
+        }
+
         Schema::table('tickets', function (Blueprint $table) {
             // تغییر نوع enum اولویت
             DB::statement("ALTER TABLE tickets MODIFY `اولویت` ENUM('low', 'medium', 'high')");
@@ -26,6 +31,10 @@ return new class extends Migration
 
     public function down()
     {
+        if (DB::getDriverName() !== 'mysql') {
+            return;
+        }
+
         Schema::table('tickets', function (Blueprint $table) {
             // حذف ستون اضافه شده
             $table->dropColumn('attachment_path');

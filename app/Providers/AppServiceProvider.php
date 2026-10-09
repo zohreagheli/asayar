@@ -27,6 +27,13 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        // فقط در محیط پیش‌نمایش Base44: آدرس‌های تولیدشده (دارایی‌ها و لینک‌ها)
+        // به هاست عمومی پیش‌نمایش اشاره کنند تا در iframe مرورگر بارگذاری شوند.
+        if (env('BASE44_PREVIEW_MODE') === '1' && env('BASE44_PUBLIC_HOST_SUFFIX')) {
+            \Illuminate\Support\Facades\URL::forceRootUrl('https://3000-'.env('BASE44_PUBLIC_HOST_SUFFIX'));
+            \Illuminate\Support\Facades\URL::forceScheme('https');
+        }
+
         Validator::extend('jdate', function ($attribute, $value, $parameters) {
             try {
                 Jalalian::fromFormat($parameters[0] ?? 'Y-m-d', $value);
