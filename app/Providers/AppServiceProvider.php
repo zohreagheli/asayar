@@ -12,7 +12,14 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        //
+        $this->app->singleton(\App\Services\CartService::class, function ($app) {
+            return new \App\Services\CartService($app->make(\Illuminate\Session\SessionManager::class));
+        });
+
+        $helperFile = app_path('Helpers/negovid_helpers.php');
+        if (file_exists($helperFile)) {
+            require_once $helperFile;
+        }
     }
 
     /**

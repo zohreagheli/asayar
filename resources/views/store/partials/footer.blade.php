@@ -1,0 +1,72 @@
+<footer class="bg-espresso text-cream mt-16">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:py-16">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-12">
+            {{-- Brand --}}
+            <div class="lg:col-span-1">
+                <div class="flex flex-col mb-4">
+                    <span class="text-2xl font-display text-gold" style="font-weight: 500;">negovid</span>
+                    <span class="text-xs tracking-[0.3em] text-gold-dark mt-1">ACCESSORIES</span>
+                </div>
+                <p class="text-sm text-cream/60 leading-relaxed">
+                    نگووید، فروشگاه آنلاین اکسسوری‌های ظریف و خاص. زیبایی در جزئیات کوچک.
+                </p>
+            </div>
+
+            {{-- Quick Links --}}
+            <div>
+                <h3 class="text-gold text-sm font-medium mb-4">دسترسی سریع</h3>
+                <ul class="space-y-2 text-sm text-cream/70">
+                    <li><a href="{{ route('store.home') }}" class="hover:text-gold transition-colors">صفحه اصلی</a></li>
+                    <li><a href="{{ route('store.shop') }}" class="hover:text-gold transition-colors">فروشگاه</a></li>
+                    <li><a href="{{ route('store.about') }}" class="hover:text-gold transition-colors">درباره ما</a></li>
+                    <li><a href="{{ route('store.contact') }}" class="hover:text-gold transition-colors">تماس با ما</a></li>
+                    <li><a href="{{ route('store.track.order') }}" class="hover:text-gold transition-colors">پیگیری سفارش</a></li>
+                </ul>
+            </div>
+
+            {{-- Categories --}}
+            <div>
+                <h3 class="text-gold text-sm font-medium mb-4">دسته‌بندی محصولات</h3>
+                <ul class="space-y-2 text-sm text-cream/70">
+                    <li><a href="{{ route('store.shop', ['category' => 'mobile-charm']) }}" class="hover:text-gold transition-colors">چارم موبایل</a></li>
+                    <li><a href="{{ route('store.shop', ['category' => 'bag-charm']) }}" class="hover:text-gold transition-colors">آویز کیف</a></li>
+                    <li><a href="{{ route('store.shop', ['category' => 'necklace']) }}" class="hover:text-gold transition-colors">گردنبند</a></li>
+                    <li><a href="{{ route('store.shop', ['category' => 'earring']) }}" class="hover:text-gold transition-colors">گوشواره</a></li>
+                </ul>
+            </div>
+
+            {{-- Contact --}}
+            <div>
+                <h3 class="text-gold text-sm font-medium mb-4">راه‌های ارتباطی</h3>
+                <ul class="space-y-2 text-sm text-cream/70">
+                    <li class="flex items-center gap-2">
+                        <svg class="w-4 h-4 text-gold/60" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/></svg>
+                        <span>تکمیل خواهد شد</span>
+                    </li>
+                    <li class="flex items-center gap-2">
+                        <svg class="w-4 h-4 text-gold/60" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+                        <span>تکمیل خواهد شد</span>
+                    </li>
+                </ul>
+                <div class="flex gap-3 mt-4">
+                    <a href="#" class="w-9 h-9 rounded-full border border-cream/20 flex items-center justify-center hover:border-gold hover:text-gold transition-colors" aria-label="اینستاگرام">
+                        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.265-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg>
+                    </a>
+                    <a href="#" class="w-9 h-9 rounded-full border border-cream/20 flex items-center justify-center hover:border-gold hover:text-gold transition-colors" aria-labelتلگرام">
+                        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M11.944 0A12 12 0 000 12a12 12 0 0012 12 12 12 0 0012-12A12 12 0 0012 0a12 12 0 00-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 01.171.325c.016.092.032.292.016.452-.18 1.895-.962 6.492-1.36 8.622-.168.9-.499 1.201-.82 1.231-.696.064-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.026-.217.324-.439.893-.665 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></svg>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        {{-- Bottom bar --}}
+        <div class="border-t border-cream/10 mt-10 pt-6 flex flex-col sm:flex-row justify-between items-center gap-4">
+            <p class="text-xs text-cream/50">© {{ jdate()->format('Y') }} نگووید اکسسوریز. تمامی حقوق محفوظ است.</p>
+            <div class="flex gap-4 text-xs text-cream/50">
+                <a href="#" class="hover:text-gold transition-colors">قوانین و شرایط خرید</a>
+                <a href="#" class="hover:text-gold transition-colors">حریم خصوصی</a>
+                <a href="#" class="hover:text-gold transition-colors">راهنمای خرید و ارسال</a>
+            </div>
+        </div>
+    </div>
+</footer>

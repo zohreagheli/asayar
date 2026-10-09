@@ -1,0 +1,48 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile.base44
+    working_dir: /var/www/html
+    volumes:
+      - ./:/var/www/html
+      - vendor_data:/var/www/html/vendor
+      - node_modules_data:/var/www/html/node_modules
+    ports:
+      - "3000:3000"
+    environment:
+      - DB_CONNECTION=sqlite
+      - APP_ENV=local
+      - APP_DEBUG=true
+      - APP_KEY=base64:Y2lndXJlTmVnb3ZpZEFjY2Vzc29yaWVz
+      - APP_URL=http://localhost:3000
+      - APP_LOCALE=fa
+      - APP_FALLBACK_LOCALE=fa
+      - SESSION_DRIVER=file
+      - CACHE_STORE=file
+      - QUEUE_CONNECTION=sync
+      - FILESYSTEM_DISK=public
+      - BASE44_PREVIEW_MODE=${BASE44_PREVIEW_MODE:-0}
+      - BASE44_PUBLIC_HOST_SUFFIX=${BASE44_PUBLIC_HOST_SUFFIX:-localhost}
+      - BASE44_SANDBOX_HOST_DOMAIN=${BASE44_SANDBOX_HOST_DOMAIN:-localhost}
+    command: ["sh", "-ec", "
+      if [ ! -f vendor/autoload.php ]; then composer install --no-interaction --optimize-autoloader; fi &&
+      php artisan key:generate --force &&
+      (php artisan storage:link --force || true) &&
+      if [ ! -d node_modules ]; then npm install; fi &&
+      npm run build &&
+      php artisan migrate --force &&
+      (php artisan db:seed --force --class=NegovidStoreSeeder || true) &&
+      exec php artisan serve --host=0.0.0.0 --port=3000
+    "]
+    healthcheck:
+      test: ["CMD", "sh", "-c", "curl -sf http://localhost:3000/ || exit 1"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 90s
+    restart: on-failure
+
+volumes:
+  vendor_data:
+  node_modules_data:

@@ -19,6 +19,7 @@ use  Notifiable;
         'mobile',
         'password',
         'avatar',
+        'role',
     ];
 
     protected $hidden = [
