@@ -1,0 +1,12 @@
+{
+  "previewPort": 3000,
+  "healthPath": "/up",
+  "startCommand": "docker compose -f docker-compose.base44.yml up -d",
+  "secrets": [
+    {
+      "name": "KAVENEGAR_API_KEY",
+      "description": "Kavenegar SMS API key for OTP login. Obtain from https://panel.kavenegar.com. Optional — app boots without it, but SMS-based OTP login will not work.",
+      "requiredAtBoot": false
+    }
+  ]
+}

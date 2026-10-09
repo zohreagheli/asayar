@@ -19,6 +19,8 @@
     },
     "dependencies": {
         "alpinejs": "^3.14.9",
+        "jquery": "^3.7.1",
+        "perfect-scrollbar": "^1.5.5",
         "persian-datepicker": "^1.2.0"
     }
 }

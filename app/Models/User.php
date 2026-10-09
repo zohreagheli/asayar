@@ -12,7 +12,7 @@ use App\Models\Appointment;
 use App\Notifications\ResetPasswordNotification;
 class User extends Authenticatable
 {
-use  Notifiable;
+use HasFactory, Notifiable;
     protected $fillable = [
         'name',
         'email',

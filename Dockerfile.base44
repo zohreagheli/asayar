@@ -1,0 +1,17 @@
+FROM php:8.3-cli
+
+# System dependencies + PHP extensions
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    git curl unzip libpng-dev libonig-dev libxml2-dev libzip-dev libsqlite3-dev \
+    && docker-php-ext-install pdo_sqlite mbstring bcmath gd exif pcntl \
+    && apt-get clean && rm -rf /var/lib/apt/lists/*
+
+# Composer
+COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
+
+# Node.js 20
+RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - \
+    && apt-get install -y --no-install-recommends nodejs \
+    && apt-get clean && rm -rf /var/lib/apt/lists/*
+
+WORKDIR /app

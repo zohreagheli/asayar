@@ -10,8 +10,10 @@ return new class extends Migration
     public function up()
     {
         Schema::table('tickets', function (Blueprint $table) {
-            // تغییر نوع enum اولویت
-            DB::statement("ALTER TABLE tickets MODIFY `اولویت` ENUM('low', 'medium', 'high')");
+            // تغییر نوع enum اولویت (MySQL only — SQLite stores as TEXT)
+            if (DB::connection()->getDriverName() === 'mysql') {
+                DB::statement("ALTER TABLE tickets MODIFY `اولویت` ENUM('low', 'medium', 'high')");
+            }
 
             // تغییر نام ستون‌ها
             $table->renameColumn('عنوان', 'title');
@@ -36,8 +38,10 @@ return new class extends Migration
             $table->renameColumn('priority', 'اولویت');
             $table->renameColumn('description', 'توضیحات');
 
-            // بازگرداندن نوع enum اولویت
-            DB::statement("ALTER TABLE tickets MODIFY `اولویت` ENUM('پایین', 'متوسط', 'بالا')");
+            // بازگرداندن نوع enum اولویت (MySQL only)
+            if (DB::connection()->getDriverName() === 'mysql') {
+                DB::statement("ALTER TABLE tickets MODIFY `اولویت` ENUM('پایین', 'متوسط', 'بالا')");
+            }
         });
     }
 };
